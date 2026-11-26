@@ -1,0 +1,565 @@
+/* ==========================================================================
+   FitGesty — aluno.css (Painel Esportivo de Alta Energia do Aluno)
+   Governança: web-craft-designer & frontend-engineer (Regra Ponytail #24)
+   ========================================================================== */
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  background-image: radial-gradient(circle at 50% -15%, rgba(132, 204, 22, 0.12) 0%, rgba(9, 9, 11, 1) 60%),
+                    radial-gradient(circle at 90% 40%, rgba(249, 115, 22, 0.08) 0%, rgba(9, 9, 11, 1) 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+.skip-link {
+  position: absolute; top: -100px; left: 1rem;
+  background: var(--accent-lime); color: #000;
+  padding: 0.5rem 1rem; border-radius: 0 0 6px 6px;
+  font-weight: 700; z-index: 9999; text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: rgba(18, 18, 24, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo-fitgesty h1 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.logo-fitgesty h1 span { color: var(--accent-lime); text-shadow: 0 0 16px var(--accent-lime-glow); }
+.logo-fitgesty p { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.topbar-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+main {
+  flex: 1;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* ── BENTO ATHLETIC GRID ── */
+.athletic-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.col-rings { grid-column: span 12; }
+.col-xp { grid-column: span 12; }
+.col-workout { grid-column: span 12; }
+.col-mural { grid-column: span 12; }
+.col-resources { grid-column: span 12; }
+
+@media (min-width: 900px) {
+  .col-rings { grid-column: span 7; }
+  .col-xp { grid-column: span 5; }
+  .col-workout { grid-column: span 7; }
+  .col-mural { grid-column: span 5; }
+}
+
+.athletic-card {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.card-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── ACTIVITY METRIC RINGS (Apple Fitness Style) ── */
+.rings-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.rings-svg-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+.rings-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+.ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+}
+.ring-progress {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ring-center-stat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+.ring-center-stat strong {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+.ring-center-stat span {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.metrics-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 180px;
+}
+.metric-pill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.9rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+.metric-pill-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.pill-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.pill-val {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── GAMIFICATION XP & LEVEL BADGE (byte.burger style) ── */
+.xp-level-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background: rgba(132, 204, 22, 0.06);
+  border: 1px solid rgba(132, 204, 22, 0.2);
+  border-radius: var(--radius-sm);
+}
+.level-shield {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent-lime) 0%, #4d7c0f 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #09090b;
+  font-weight: 800;
+  font-family: var(--font-display);
+  box-shadow: 0 4px 16px var(--accent-lime-glow);
+  flex-shrink: 0;
+}
+.level-shield span { font-size: 0.65rem; text-transform: uppercase; line-height: 1; }
+.level-shield strong { font-size: 1.35rem; line-height: 1; }
+
+.level-meta h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.level-meta p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.xp-bar-container {
+  margin-bottom: 1rem;
+}
+.xp-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+  font-family: var(--font-mono);
+}
+.xp-track {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.xp-fill {
+  height: 100%;
+  width: 82%;
+  background: linear-gradient(90deg, var(--accent-lime) 0%, var(--accent-cyan) 100%);
+  border-radius: var(--radius-pill);
+  position: relative;
+  transition: width 0.5s ease;
+}
+.xp-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  animation: shimmer 2.5s infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.streak-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(249, 115, 22, 0.06);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+.streak-box span { color: var(--accent-ember); font-weight: 700; display: flex; align-items: center; gap: 0.35rem; }
+
+/* ── CHECKLIST DE TREINOS TÁTEIS ── */
+.workout-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.workout-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.workout-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateX(3px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.workout-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.workout-item.completed .workout-check {
+  background: var(--accent-lime);
+  border-color: var(--accent-lime);
+  color: #09090b;
+}
+.workout-item.completed .workout-title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+.workout-info { flex: 1; }
+.workout-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color 0.2s;
+}
+.workout-meta {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+.workout-xp-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-lime);
+  background: rgba(132, 204, 22, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* ── MURAL & TABELAS DE RECURSOS ── */
+.mural-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.card-announcement {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+.card-announcement h3 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+.card-announcement p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+  margin-top: 0.75rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+  min-width: 500px;
+}
+th {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.badge-success {
+  background: rgba(132, 204, 22, 0.12);
+  color: var(--accent-lime);
+  border: 1px solid rgba(132, 204, 22, 0.3);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.badge-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Alto Contraste */
+body.high-contrast {
+  --bg-primary: #000000 !important;
+  --bg-surface-glass: #000000 !important;
+  --text-primary: #ffffff !important;
+  --text-secondary: #eeeeee !important;
+  --border-subtle: #ffffff !important;
+  --border: #ffffff !important;
+  --accent-lime: #ffff00 !important;
+}
+body.high-contrast .athletic-card,
+body.high-contrast .topbar,
+body.high-contrast .metric-pill-item,
+body.high-contrast .workout-item {
+  border: 2px solid var(--border) !important;
+  box-shadow: none !important;
+}
+body.high-contrast .card-head h2,
+body.high-contrast .ring-center-stat strong,
+body.high-contrast .ring-center-stat span,
+body.high-contrast .pill-val,
+body.high-contrast .pill-label,
+body.high-contrast .level-meta h3,
+body.high-contrast .workout-title {
+  color: var(--text-primary) !important;
+}
+
+/* Alto Contraste adaptado para Light Mode */
+body.light-theme.high-contrast {
+  --bg-primary: #ffffff !important;
+  --bg-surface: #ffffff !important;
+  --bg-surface-glass: #ffffff !important;
+  --text-primary: #000000 !important;
+  --text-secondary: #000000 !important;
+  --border-subtle: #000000 !important;
+  --border: #000000 !important;
+  --accent-lime: #000000 !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+}
+body.light-theme.high-contrast .athletic-card,
+body.light-theme.high-contrast .topbar,
+body.light-theme.high-contrast .metric-pill-item,
+body.light-theme.high-contrast .workout-item,
+body.light-theme.high-contrast .xp-level-badge {
+  background: #ffffff !important;
+  border: 2px solid #000000 !important;
+  box-shadow: none !important;
+}
+body.light-theme.high-contrast .card-head h2,
+body.light-theme.high-contrast .ring-center-stat strong,
+body.light-theme.high-contrast .pill-val,
+body.light-theme.high-contrast .pill-label,
+body.light-theme.high-contrast .workout-title,
+body.light-theme.high-contrast .level-meta h3 {
+  color: #000000 !important;
+}
+body.large-font { font-size: 115%; }
+
+/* ── TEMA CLARO INSTITUCIONAL (LIGHT THEME) ── */
+body.light-theme {
+  background-color: var(--bg-primary);
+  background-image: radial-gradient(circle at 50% -15%, rgba(37, 99, 235, 0.06) 0%, #eef2f6 60%);
+  color: var(--text-primary);
+}
+body.light-theme .topbar {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+body.light-theme .athletic-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+body.light-theme .card-head h2 { color: #0f172a; }
+body.light-theme .ring-center-stat strong { color: #0f172a; }
+body.light-theme .ring-center-stat span { color: #64748b; }
+body.light-theme .ring-bg { stroke: rgba(15, 23, 42, 0.08); }
+body.light-theme .metric-pill-item {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+}
+body.light-theme .pill-val { color: #0f172a; }
+body.light-theme .pill-label { color: #475569; }
+
+body.light-theme .xp-level-badge {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+}
+body.light-theme .level-meta h3 { color: #0f172a; }
+body.light-theme .xp-track {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+}
+body.light-theme .streak-box {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+body.light-theme .workout-item {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+body.light-theme .workout-item.completed {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+body.light-theme .workout-title { color: #0f172a; }
+body.light-theme .workout-meta { color: #64748b; }
+body.light-theme .card-announcement {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+}
+body.light-theme .card-announcement h3 { color: #0f172a; }
+body.light-theme .card-announcement p { color: #475569; }
+
+body.light-theme .table-container {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+body.light-theme th {
+  background: #f8fafc;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+}
+body.light-theme td {
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+body.light-theme tr:hover td { background: #f8fafc; }
+
+body.light-theme .btn-outline-subtle {
+  border-color: #cbd5e1;
+  color: #334155;
+}
+body.light-theme .btn-outline-subtle:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}

@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Entrar — FitGesty</title>
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="stylesheet" href="design-tokens.css">
+  <link rel="stylesheet" href="base.css">
+  <style>
+    :root {
+      --login-bg-left: var(--fg-surface, #ffffff);
+      --login-bg-right: var(--fg-bg, #f1f5fb);
+      --login-text-main: var(--fg-text, #132240);
+      --login-text-sec: var(--fg-text-sec, #5b6b84);
+      --login-border: var(--fg-border, #e2e8f0);
+      --login-blue: #2563eb;
+      --login-blue-hover: #1d4ed8;
+      --login-input-bg: var(--fg-surface, #ffffff);
+      --login-badge-bg: rgba(37, 99, 235, 0.1);
+    }
+
+    html.dark-mode, body.dark-mode {
+      --login-bg-left: #0f172a;
+      --login-bg-right: #111c33;
+      --login-text-main: #f8fafc;
+      --login-text-sec: #94a3b8;
+      --login-border: #1e293b;
+      --login-blue: #3b82f6;
+      --login-blue-hover: #2563eb;
+      --login-input-bg: #1e293b;
+      --login-badge-bg: rgba(59, 130, 246, 0.16);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: clamp(16px, 0.95vw, 19px);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100dvh;
+      font-family: var(--font-sans, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+      background: var(--login-bg-left);
+      color: var(--login-text-main);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: grid;
+      grid-template-columns: 46% 54%;
+      min-height: 100dvh;
+    }
+
+    /* ── COLUNA ESQUERDA (FORMULÁRIO) ────────────────────────────────────── */
+    .login-left {
+      background: var(--login-bg-left);
+      padding: clamp(1.5rem, 3.5vh, 2.75rem) clamp(1.75rem, 4.5vw, 4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      border-right: 1px solid var(--login-border);
+      min-height: 100dvh;
+    }
+
+    .login-top-bar {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .brand-return {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .brand-return:hover .brand-bolt-icon {
+      transform: translateY(2px);
+    }
+
+    .brand-icon-box {
+      width: 2.85rem;
+      height: 2.85rem;
+      min-width: 2.85rem;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .brand-bolt-icon {
+      width: 1.45rem;
+      height: 1.45rem;
+      transition: transform 0.25s ease;
+    }
+
+    .brand-return.is-animating .brand-bolt-icon {
+      animation: boltDrop 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .brand-return.is-animating .brand-icon-box {
+      animation: boxPulse 0.65s ease forwards;
+    }
+
+    @keyframes boltDrop {
+      0% { transform: translateY(-28px) scale(0.85); opacity: 0.2; }
+      55% { transform: translateY(4px) scale(1.12); opacity: 1; }
+      75% { transform: translateY(-2px) scale(0.98); }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    @keyframes boxPulse {
+      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.55); }
+      70% { box-shadow: 0 0 0 14px rgba(37, 99, 235, 0); }
+      100% { box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28); }
+    }
+
+    .brand-texts strong {
+      display: block;
+      font-family: var(--font-display, inherit);
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--login-text-main);
+      line-height: 1.1;
+    }
+
+    .brand-texts span {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--login-text-sec);
+      margin-top: 3px;
+    }
+
+    .btn-theme-toggle {
+      padding: 0.6rem 1.1rem;
+      border-radius: 11px;
+      border: 1px solid var(--login-border);
+      background: var(--login-input-bg);
+      color: var(--login-text-main);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.2s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      border-color: var(--login-blue);
+    }
+
+    .login-form-wrapper {
+      width: 100%;
+      max-width: 520px;
+      margin: auto 0;
+      padding: 2rem 0;
+    }
+
+    .login-title {
+      font-family: var(--font-display, inherit);
+      font-size: clamp(1.85rem, 2.5vw, 2.45rem);
+      font-weight: 800;
+      line-height: 1.14;
+      letter-spacing: -0.025em;
+      color: var(--login-text-main);
+      margin-bottom: 0.7rem;
+    }
+
+    .login-subtitle {
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--login-text-sec);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.35rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--login-text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1.05rem;
+      color: var(--login-text-sec);
+      display: flex;
+      pointer-events: none;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 3.3rem;
+      padding: 0 3rem 0 2.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--login-border);
+      background: var(--login-input-bg);
+      color: var(--login-text-main);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--login-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    .btn-toggle-pass {
+      position: absolute;
+      right: 0.95rem;
+      background: none;
+      border: none;
+      color: var(--login-text-sec);
+      cursor: pointer;
+      display: flex;
+      padding: 0.35rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 3.35rem;
+      margin-top: 0.5rem;
+      border: none !important;
+      border-radius: 12px !important;
+      background: var(--login-blue) !important;
+      background-image: none !important;
+      color: #ffffff !important;
+      font-family: inherit;
+      font-size: 1.02rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25) !important;
+      transition: background-color 0.2s, transform 0.15s;
+    }
+
+    .btn-submit:hover {
+      background: var(--login-blue-hover) !important;
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .divider-line {
+      display: flex;
+      align-items: center;
+      gap: 0.95rem;
+      margin: 1.65rem 0;
+      color: var(--login-text-sec);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .divider-line::before,
+    .divider-line::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--login-border);
+    }
+
+    .btn-biometric {
+      width: 100%;
+      height: 3.3rem;
+      border-radius: 12px;
+      border: 1px solid var(--login-border);
+      background: var(--login-input-bg);
+      color: var(--login-text-main);
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .btn-biometric:hover {
+      border-color: var(--login-blue);
+    }
+
+    .alert-box {
+      padding: 0.85rem 1rem;
+      border-radius: 11px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 1.15rem;
+      display: none;
+    }
+
+    .alert-box.error {
+      display: block;
+      background: rgba(220, 38, 38, 0.1);
+      color: #dc2626;
+      border: 1px solid rgba(220, 38, 38, 0.25);
+    }
+
+    .alert-box.success {
+      display: block;
+      background: rgba(22, 163, 74, 0.1);
+      color: #16a34a;
+      border: 1px solid rgba(22, 163, 74, 0.25);
+    }
+
+    .academy-picker {
+      display: none;
+      margin-bottom: 1.15rem;
+      padding: 0.95rem;
+      border-radius: 12px;
+      border: 1px solid var(--login-border);
+      background: var(--login-bg-right);
+    }
+
+    .academy-picker.open {
+      display: block;
+    }
+
+    .login-spacer {
+      height: 1px;
+    }
+
+    /* ── COLUNA DIREITA (VITRINE + CLIMA DINÂMICO) ──────────────────────── */
+    .login-right {
+      position: relative;
+      overflow: hidden;
+      background: var(--login-bg-right);
+      padding: clamp(2.5rem, 4.5vh, 4rem) clamp(2.5rem, 5vw, 5.5rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100dvh;
+      transition: background 0.7s ease, color 0.5s ease;
+    }
+
+    /* Sol: iluminado e quente */
+    body.weather-sunny:not(.dark-mode) .login-right {
+      background: linear-gradient(155deg, #eff6ff 0%, #fef9c3 100%);
+    }
+
+    /* Nublado: cinza-azulado suave */
+    body.weather-cloudy:not(.dark-mode) .login-right {
+      background: linear-gradient(155deg, #e2e8f0 0%, #cbd5e1 100%);
+    }
+
+    /* Pingos leves caindo apenas dentro da janela */
+    @keyframes windowRainDrop {
+      0% { transform: translate(0, -10px); opacity: 0; }
+      30% { opacity: 0.9; }
+      85% { opacity: 0.9; }
+      100% { transform: translate(-4px, 14px); opacity: 0; }
+    }
+
+    /* Controle das poses e detalhes da janela por clima */
+    .pose-sunny,
+    .pose-rainy,
+    .pose-cloudy,
+    .window-sun,
+    .window-rain-lines,
+    .window-clouds {
+      display: none;
+    }
+
+    /* Padrão / Sol / Noite -> moça treinando normal */
+    body:not(.weather-rainy):not(.weather-cloudy) .pose-sunny {
+      display: block;
+    }
+
+    /* Sol pequeno na janela apenas quando estiver ensolarado */
+    body.weather-sunny .window-sun {
+      display: block;
+    }
+
+    /* Chuva -> janela escura com pingos leves e moça com guarda-chuva */
+    body.weather-rainy .pose-rainy,
+    body.weather-rainy .window-rain-lines {
+      display: block;
+    }
+    body.weather-rainy .window-glass {
+      fill: #334155;
+    }
+    body.weather-rainy .window-rain-lines line {
+      animation: windowRainDrop 1.8s linear infinite;
+    }
+    body.weather-rainy .window-rain-lines line:nth-child(even) {
+      animation-delay: 0.9s;
+    }
+
+    /* Nublado -> nuvens na janela e moça secando o suor com toalha */
+    body.weather-cloudy .pose-cloudy,
+    body.weather-cloudy .window-clouds {
+      display: block;
+    }
+    body.weather-cloudy .window-glass {
+      fill: #cbd5e1;
+    }
+
+    /* Noite */
+    body.weather-night:not(.dark-mode) .login-right {
+      background: linear-gradient(155deg, #e0e7ff 0%, #ede9fe 100%);
+    }
+
+    /* Gotas de chuva caindo suavemente (velocidade calma) */
+    .rain-overlay {
+      position: absolute;
+      inset: -40px 0 0 0;
+      pointer-events: none;
+      display: none;
+      opacity: 0.55;
+      background-image:
+        linear-gradient(172deg, transparent 46%, rgba(147, 197, 253, 0.55) 49%, rgba(147, 197, 253, 0.1) 52%, transparent 55%),
+        linear-gradient(172deg, transparent 46%, rgba(191, 219, 254, 0.4) 49%, rgba(191, 219, 254, 0.08) 52%, transparent 55%);
+      background-size: 46px 68px, 72px 96px;
+      background-position: 0 0, 22px 34px;
+      animation: gentleRainFall 2.4s linear infinite;
+    }
+
+    body.weather-rainy .rain-overlay {
+      display: block;
+    }
+
+    @keyframes gentleRainFall {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(68px); }
+    }
+
+    .weather-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.95rem;
+      border-radius: 999px;
+      background: var(--login-badge-bg);
+      color: var(--login-blue);
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.4s ease, transform 0.4s ease, background 0.4s ease, color 0.4s ease;
+    }
+
+    .weather-pill.loaded {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .right-inner {
+      max-width: 680px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .right-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--login-blue);
+      margin-bottom: 0.7rem;
+    }
+
+    .right-heading {
+      font-family: var(--font-display, inherit);
+      font-size: clamp(2.1rem, 2.9vw, 2.85rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--login-text-main);
+      margin-bottom: 0.95rem;
+    }
+
+    .right-lead {
+      font-size: 1.06rem;
+      line-height: 1.55;
+      color: var(--login-text-sec);
+      margin-bottom: 1.85rem;
+    }
+
+    .illustration-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 0.75rem 0 2.25rem;
+    }
+
+    .illustration-wrap svg {
+      width: 100%;
+      max-width: 430px;
+      max-height: 33vh;
+      height: auto;
+    }
+
+    /* Controle das poses por clima dentro do SVG */
+    .pose-sunny,
+    .pose-rainy,
+    .pose-cloudy,
+    .window-rain-lines,
+    .window-clouds {
+      display: none;
+    }
+
+    /* Padrão / Sol / Noite -> mostra a moça treinando normal */
+    body:not(.weather-rainy):not(.weather-cloudy) .pose-sunny {
+      display: block;
+    }
+
+    /* Chuva -> mostra janela escura com chuva e a moça com guarda-chuva */
+    body.weather-rainy .pose-rainy,
+    body.weather-rainy .window-rain-lines {
+      display: block;
+    }
+    body.weather-rainy .window-glass {
+      fill: #334155;
+    }
+
+    /* Nublado -> mostra nuvens na janela e a moça secando o suor com toalha */
+    body.weather-cloudy .pose-cloudy,
+    body.weather-cloudy .window-clouds {
+      display: block;
+    }
+    body.weather-cloudy .window-glass {
+      fill: #cbd5e1;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.35rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.05rem;
+    }
+
+    .feature-icon {
+      width: 2.75rem;
+      height: 2.75rem;
+      min-width: 2.75rem;
+      border-radius: 12px;
+      background: var(--login-badge-bg);
+      color: var(--login-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feature-item strong {
+      display: block;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--login-text-main);
+      margin-bottom: 0.2rem;
+    }
+
+    .feature-item span {
+      display: block;
+      font-size: 0.92rem;
+      color: var(--login-text-sec);
+      line-height: 1.45;
+    }
+
+    /* ── RESPONSIVO AUTOMÁTICO PARA TABLET E CELULAR ─────────────────────── */
+    @media (max-width: 960px) {
+      html {
+        font-size: 16px;
+      }
+      body {
+        grid-template-columns: 1fr;
+      }
+      .login-right {
+        display: none;
+      }
+      .login-left {
+        width: 100%;
+        padding: 1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
+        border-right: none;
+        justify-content: flex-start;
+        gap: 1.5rem;
+      }
+      .login-top-bar,
+      .login-form-wrapper {
+        max-width: 100%;
+      }
+      .login-form-wrapper {
+        margin: auto 0;
+        padding: 0.5rem 0 1.5rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .brand-texts span {
+        display: none;
+      }
+      .btn-theme-toggle {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COLUNA ESQUERDA: ACESSO -->
+  <section class="login-left">
+    <div class="login-top-bar">
+      <a href="/index.html" id="brandReturnLink" class="brand-return" title="Voltar para a página inicial do FitGesty">
+        <div class="brand-icon-box">
+          <svg class="brand-bolt-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <div class="brand-texts">
+          <strong>FitGesty</strong>
+          <span>GESTÃO QUE DÁ MOVIMENTO</span>
+        </div>
+      </a>
+
+      <button type="button" id="themeToggleBtn" class="btn-theme-toggle">
+        Modo escuro
+      </button>
+    </div>
+
+    <div class="login-form-wrapper">
+      <h1 class="login-title">Seu próximo movimento começa aqui.</h1>
+      <p class="login-subtitle">
+        Acesse como Gestor, Colaborador ou Aluno.
+      </p>
+
+      <div id="loginAlert" class="alert-box" role="alert"></div>
+
+      <div id="academyPicker" class="academy-picker">
+        <label class="form-label" for="academySelect">Selecione a academia:</label>
+        <select id="academySelect" class="form-input" style="padding-left:0.85rem;"></select>
+      </div>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <label class="form-label" for="emailInput">E-mail de acesso</label>
+          <div class="input-box">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </span>
+            <input type="email" id="emailInput" class="form-input" placeholder="seu@email.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="passwordInput">Senha</label>
+          <div class="input-box">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input type="password" id="passwordInput" class="form-input" placeholder="••••••••" required>
+            <button type="button" id="togglePassBtn" class="btn-toggle-pass" aria-label="Mostrar ou ocultar senha">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">
+          <span>Entrar no painel</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="divider-line">ou acesso rápido</div>
+
+      <button type="button" id="biometricBtn" class="btn-biometric">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 1.17-.02 2"/>
+        </svg>
+        <span>Entrar com Biometria</span>
+      </button>
+    </div>
+
+    <div class="login-spacer"></div>
+  </section>
+
+  <!-- COLUNA DIREITA: DESTAQUES DO SISTEMA + CENA CLIMÁTICA -->
+  <aside class="login-right">
+    
+    <div class="right-inner">
+      <div id="weatherPill" class="weather-pill" role="button" tabindex="0" title="Clique para alterar a cidade"></div>
+      <p class="right-eyebrow">SUA ACADEMIA. MAIS CONECTADA.</p>
+      <h2 class="right-heading">Gestão no ritmo da sua academia.</h2>
+      <p class="right-lead">
+        Matrículas, acessos, reservas e financeiro. Tudo em um só lugar, sempre em movimento.
+      </p>
+
+      <div class="illustration-wrap" aria-hidden="true">
+        <svg viewBox="0 0 360 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- CENÁRIO DA ACADEMIA (JANELA, SOL/NUVENS/CHUVA, PISO, RACK, PLANTA) -->
+          <path class="window-glass" d="M210 175V62C210 38.8 228.8 20 252 20C275.2 20 294 38.8 294 62V175H210Z" fill="#dce6f7" stroke="#233862" stroke-width="2"/>
+
+          <!-- Sol pequeno no fundo da janela quando estiver sol -->
+          <g class="window-sun">
+            <circle cx="272" cy="48" r="10" fill="#facc15"/>
+            <g stroke="#facc15" stroke-width="1.8" stroke-linecap="round">
+              <line x1="272" y1="32" x2="272" y2="35"/>
+              <line x1="272" y1="61" x2="272" y2="64"/>
+              <line x1="256" y1="48" x2="259" y2="48"/>
+              <line x1="285" y1="48" x2="288" y2="48"/>
+              <line x1="261" y1="37" x2="263" y2="39"/>
+              <line x1="281" y1="57" x2="283" y2="59"/>
+              <line x1="283" y1="37" x2="281" y2="39"/>
+              <line x1="263" y1="57" x2="261" y2="59"/>
+            </g>
+          </g>
+
+          <!-- Nuvens na janela quando nublado -->
+          <g class="window-clouds">
+            <path d="M224 56C224 50 229 46 235 47C238 42 246 42 249 48C254 48 257 52 257 56H224Z" fill="#f8fafc" opacity="0.9"/>
+            <path d="M250 98C250 93 254 90 259 91C261 87 268 87 271 92C275 92 278 95 278 98H250Z" fill="#f8fafc" opacity="0.8"/>
+          </g>
+
+          <!-- Pingos leves apenas na janela quando chovendo -->
+          <g class="window-rain-lines" stroke="#93c5fd" stroke-width="1.6" stroke-linecap="round">
+            <line x1="226" y1="44" x2="223" y2="54"/>
+            <line x1="242" y1="56" x2="239" y2="66"/>
+            <line x1="270" y1="46" x2="267" y2="56"/>
+            <line x1="230" y1="92" x2="227" y2="102"/>
+            <line x1="265" y1="90" x2="262" y2="100"/>
+            <line x1="244" y1="136" x2="241" y2="146"/>
+            <line x1="274" y1="134" x2="271" y2="144"/>
+          </g>
+
+          <!-- POSE 1: SOL / PADRÃO (TREINANDO COM HALTERES) -->
+          <g class="pose-sunny">
+            <path d="M168 118L130 168H144L178 130L215 168H230L192 118H168Z" fill="#2952cc"/>
+            <rect x="116" y="167" width="30" height="8" rx="4" fill="#ffffff" stroke="#233862" stroke-width="2"/>
+            <rect x="214" y="167" width="30" height="8" rx="4" fill="#ffffff" stroke="#233862" stroke-width="2"/>
+            <path d="M166 76H192L195 118H165L166 76Z" fill="#2563eb"/>
+            <path d="M166 80L142 98L135 88" stroke="#f4b38a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M192 80L218 106L230 98" stroke="#f4b38a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="125" y="76" width="16" height="22" rx="3" transform="rotate(-18 125 76)" fill="#3b4d71"/>
+            <rect x="224" y="88" width="16" height="22" rx="3" transform="rotate(18 224 88)" fill="#3b4d71"/>
+            <circle cx="179" cy="58" r="13" fill="#f4b38a"/>
+            <path d="M166 56C166 46 175 41 185 43C192 45 194 52 192 56C186 52 174 52 166 56Z" fill="#1e2f52"/>
+            <path d="M191 48C204 46 211 56 207 69C201 66 196 58 191 48Z" fill="#1e2f52"/>
+          </g>
+
+          <!-- POSE 2: CHUVA (NA ACADEMIA COM GUARDA-CHUVA) -->
+          <g class="pose-rainy">
+            <!-- Pernas em pé -->
+            <path d="M167 118H178L176 168H164L167 118Z" fill="#2952cc"/>
+            <path d="M181 118H192L195 168H183L181 118Z" fill="#2952cc"/>
+            <rect x="156" y="167" width="24" height="8" rx="4" fill="#ffffff" stroke="#233862" stroke-width="2"/>
+            <rect x="181" y="167" width="24" height="8" rx="4" fill="#ffffff" stroke="#233862" stroke-width="2"/>
+            <!-- Tronco -->
+            <path d="M166 76H193L195 118H164L166 76Z" fill="#2563eb"/>
+            <!-- Braço esquerdo na cintura / bolsa de treino -->
+            <path d="M166 81L152 99L163 110" stroke="#f4b38a" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Braço direito segurando o cabo do guarda-chuva -->
+            <path d="M193 81L210 92L215 78" stroke="#f4b38a" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Cabeça e cabelo -->
+            <circle cx="179" cy="58" r="13" fill="#f4b38a"/>
+            <path d="M166 56C166 46 175 41 185 43C192 45 194 52 192 56C186 52 174 52 166 56Z" fill="#1e2f52"/>
+            <path d="M191 48C204 46 211 56 207 69C201 66 196 58 191 48Z" fill="#1e2f52"/>
+            <!-- Guarda-chuva aberto -->
+            <path d="M215 36V88C215 93 208 93 208 88" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+            <path d="M166 36C168 14 192 4 215 4C238 4 262 14 264 36C252 32 240 32 230 36C220 32 210 32 200 36C190 32 178 32 166 36Z" fill="#3b82f6" stroke="#1e293b" stroke-width="2"/>
+            <path d="M215 4V1" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+          </g>
+
+          <!-- POSE 3: NUBLADO (SECANDO O SUOR COM UMA TOALHA) -->
+          <g class="pose-cloudy">
+            <!-- Pernas em pé -->
+            <path d="M167 118H178L176 168H164L167 118Z" fill="#2952cc"/>
+            <path d="M181 118H192L195 168H183L181 118Z" fill="#2952cc"/>
+            <rect x="156" y="167" width="24" height="8" rx="4" fill="#ffffff" stroke="#233862" stroke-width="2"/>
+            <rect x="181" y="167" width="24" height="8" rx="4" fill="#ffffff" stroke="#233862" stroke-width="2"/>
+            <!-- Tronco -->
+            <path d="M166 76H193L195 118H164L166 76Z" fill="#2563eb"/>
+            <!-- Braço esquerdo segurando garrafa d'água -->
+            <path d="M166 81L151 102L157 114" stroke="#f4b38a" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="151" y="109" width="11" height="20" rx="3" fill="#38bdf8" stroke="#233862" stroke-width="1.6"/>
+            <!-- Cabeça e cabelo -->
+            <circle cx="179" cy="58" r="13" fill="#f4b38a"/>
+            <path d="M166 56C166 46 175 41 185 43C192 45 194 52 192 56C186 52 174 52 166 56Z" fill="#1e2f52"/>
+            <path d="M191 48C204 46 211 56 207 69C201 66 196 58 191 48Z" fill="#1e2f52"/>
+            <!-- Braço direito levantado secando a testa com a toalha branca -->
+            <path d="M193 80L209 68L194 54" stroke="#f4b38a" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="183" y="45" width="19" height="13" rx="4" transform="rotate(-12 183 45)" fill="#ffffff" stroke="#233862" stroke-width="1.8"/>
+            <!-- Gotinhas de suor -->
+            <circle cx="161" cy="52" r="2" fill="#38bdf8"/>
+            <circle cx="158" cy="60" r="1.6" fill="#38bdf8"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <strong>Catraca Biométrica & App do Aluno</strong>
+            <span>Entrada com digital ou FaceID e saída automática ao finalizar o treino.</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <div>
+            <strong>Reservas com Controle de Capacidade</strong>
+            <span>Bloqueio automático quando todas as salas ou aparelhos estão ocupados.</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </div>
+          <div>
+            <strong>Financeiro & DRE de 6 Meses</strong>
+            <span>Receitas, despesas lançadas por mês e retenção de alunos em tempo real.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    if (window.location.search) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    const themeBtn = document.getElementById('themeToggleBtn');
+    function applyTheme(dark) {
+      document.documentElement.classList.toggle('dark-mode', dark);
+      document.body.classList.toggle('dark-mode', dark);
+      if (themeBtn) themeBtn.textContent = dark ? 'Modo claro' : 'Modo escuro';
+    }
+    applyTheme(localStorage.getItem('fit_theme') === 'dark');
+
+    themeBtn?.addEventListener('click', () => {
+      const nextDark = !document.body.classList.contains('dark-mode');
+      localStorage.setItem('fit_theme', nextDark ? 'dark' : 'light');
+      applyTheme(nextDark);
+    });
+
+    const brandReturnLink = document.getElementById('brandReturnLink');
+    brandReturnLink?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (brandReturnLink.classList.contains('is-animating')) return;
+      brandReturnLink.classList.add('is-animating');
+      setTimeout(() => {
+        window.location.href = '/index.html';
+      }, 620);
+    });
+
+    const passwordInput = document.getElementById('passwordInput');
+    document.getElementById('togglePassBtn')?.addEventListener('click', () => {
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    });
+
+    const alertBox = document.getElementById('loginAlert');
+    function showAlert(msg, type = 'error') {
+      alertBox.textContent = msg;
+      alertBox.className = `alert-box ${type}`;
+    }
+
+    function salvarSessaoERedirecionar(data) {
+      localStorage.setItem('fit_token', data.token);
+      localStorage.setItem('fit_role', data.role);
+      localStorage.setItem('fit_is_demo', data.isDemo ? 'true' : 'false');
+      if (data.academyId) localStorage.setItem('fit_academy_id', data.academyId);
+      if (data.academyName) localStorage.setItem('fit_academy_name', data.academyName);
+      if (data.name) localStorage.setItem('fit_user_name', data.name);
+      if (data.memberId) localStorage.setItem('fit_user_id', data.memberId);
+
+      window.location.href = data.redirect || (
+        data.role === 'superadmin' ? '/superadmin.html' :
+        data.role === 'admin' ? '/admin.html' : '/aluno.html'
+      );
+    }
+
+    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.className = 'alert-box';
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+
+      const email = document.getElementById('emailInput').value.trim();
+      const password = passwordInput.value.trim();
+      const academyPicker = document.getElementById('academyPicker');
+      const academyId = academyPicker.classList.contains('open')
+        ? document.getElementById('academySelect').value
+        : undefined;
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, academyId })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Falha ao autenticar.');
+        }
+
+        if (data.multipleAcademies && Array.isArray(data.options)) {
+          const sel = document.getElementById('academySelect');
+          sel.innerHTML = data.options
+            .map(op => `<option value="${op.academyId}">${op.academyName} (${op.role})</option>`)
+            .join('');
+          academyPicker.classList.add('open');
+          showAlert('Mais de uma academia encontrada. Selecione abaixo e clique em Entrar.', 'success');
+          submitBtn.disabled = false;
+          return;
+        }
+
+        salvarSessaoERedirecionar(data);
+      } catch (err) {
+        showAlert(err.message, 'error');
+        submitBtn.disabled = false;
+      }
+    });
+
+    document.getElementById('biometricBtn')?.addEventListener('click', async () => {
+      alertBox.className = 'alert-box';
+      try {
+        const savedCredId = localStorage.getItem('fit_biometric_cred_id');
+        if (!savedCredId) {
+          throw new Error('Nenhuma biometria vinculada neste aparelho. Entre com e-mail e senha primeiro.');
+        }
+
+        const chalRes = await fetch('/api/biometric/challenge');
+        const { challenge } = await chalRes.json();
+
+        const challengeBuf = Uint8Array.from(atob(challenge.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+        const credIdBuf = Uint8Array.from(atob(savedCredId.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+
+        await navigator.credentials.get({
+          publicKey: {
+            challenge: challengeBuf,
+            allowCredentials: [{ id: credIdBuf, type: 'public-key' }],
+            userVerification: 'preferred',
+            timeout: 60000
+          }
+        });
+
+        const loginRes = await fetch('/api/biometric/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credentialId: savedCredId })
+        });
+        const data = await loginRes.json();
+        if (!loginRes.ok) throw new Error(data.error || 'Falha na biometria.');
+
+        if (data.presenca?.mensagem) {
+          localStorage.setItem('fit_last_presenca', data.presenca.mensagem);
+        }
+        salvarSessaoERedirecionar(data);
+      } catch (err) {
+        showAlert(err.message || 'Não foi possível autenticar via biometria.', 'error');
+      }
+    });
+
+    // ── CLIMA DINÂMICO POR CIDADE + POSES NA ACADEMIA ───────────────────────
+    (function aplicarClimaDinamico() {
+      const pill = document.getElementById('weatherPill');
+      const lead = document.querySelector('.right-lead');
+      if (!pill) return;
+
+      const STORAGE_CITY_KEY = 'fit_weather_city';
+
+      function interpretarCodigoWMO(code, isDay) {
+        if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99].includes(code)) {
+          return {
+            classe: 'weather-rainy',
+            icone: '🌧️',
+            label: 'Chuvoso',
+            frase: 'Chuva lá fora não para o treino aqui dentro. Gestão completa em qualquer tempo.'
+          };
+        }
+        if ([2, 3, 45, 48].includes(code)) {
+          return {
+            classe: 'weather-cloudy',
+            icone: '☁️',
+            label: 'Nublado',
+            frase: 'Dia nublado, foco total nos resultados. Matrículas, acessos e financeiro em um só lugar.'
+          };
+        }
+        if (!isDay) {
+          return {
+            classe: 'weather-night',
+            icone: '🌙',
+            label: 'Noite',
+            frase: 'Horário de pico ou fechamento do dia: sua academia operando no ritmo certo.'
+          };
+        }
+        return {
+          classe: 'weather-sunny',
+          icone: '☀️',
+          label: 'Ensolarado',
+          frase: 'Dia de sol e casa cheia! Matrículas, acessos, reservas e financeiro sempre em movimento.'
+        };
+      }
+
+      async function buscarClima(lat, lon, cidadeNome = '') {
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,is_day,weather_code&timezone=auto`;
+          const res = await fetch(url);
+          if (!res.ok) return;
+          const data = await res.json();
+          const cur = data.current;
+          if (!cur) return;
+
+          const info = interpretarCodigoWMO(Number(cur.weather_code), Number(cur.is_day) === 1);
+          const temp = Math.round(Number(cur.temperature_2m));
+          const sufixoCidade = cidadeNome ? ` • ${cidadeNome}` : '';
+
+          document.body.classList.remove('weather-sunny', 'weather-cloudy', 'weather-rainy', 'weather-night');
+          document.body.classList.add(info.classe);
+
+          pill.textContent = `${info.icone} ${temp}°C • ${info.label}${sufixoCidade} ✎`;
+          pill.classList.add('loaded');
+          if (lead) lead.textContent = info.frase;
+        } catch (_) {}
+      }
+
+      async function detectarCidadeAutomatica() {
+        try {
+          const salva = JSON.parse(localStorage.getItem(STORAGE_CITY_KEY) || 'null');
+          if (salva && salva.lat && salva.lon) {
+            return buscarClima(salva.lat, salva.lon, salva.name);
+          }
+        } catch (_) {}
+
+        try {
+          const geoIp = await fetch('https://ipapi.co/json/').then(r => r.json());
+          if (geoIp && geoIp.latitude && geoIp.longitude) {
+            return buscarClima(geoIp.latitude, geoIp.longitude, geoIp.city || '');
+          }
+        } catch (_) {}
+
+        buscarClima(-20.4697, -54.6201, 'Campo Grande');
+      }
+
+      pill.addEventListener('click', async () => {
+        const novaCidade = prompt('Digite o nome da cidade da academia (deixe vazio para detectar automaticamente):');
+        if (novaCidade === null) return;
+
+        const termo = novaCidade.trim();
+        if (!termo) {
+          localStorage.removeItem(STORAGE_CITY_KEY);
+          detectarCidadeAutomatica();
+          return;
+        }
+
+        try {
+          const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(termo)}&count=1&language=pt&format=json`);
+          const data = await res.json();
+          const lugar = data.results && data.results[0];
+          if (!lugar) {
+            alert('Cidade não encontrada. Tente novamente.');
+            return;
+          }
+          localStorage.setItem(STORAGE_CITY_KEY, JSON.stringify({
+            name: lugar.name,
+            lat: lugar.latitude,
+            lon: lugar.longitude
+          }));
+          buscarClima(lugar.latitude, lugar.longitude, lugar.name);
+        } catch (_) {
+          alert('Não foi possível buscar a cidade agora.');
+        }
+      });
+
+      detectarCidadeAutomatica();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitGesty — Sistema de Gestão e Rentabilidade para Academias</title>
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="stylesheet" href="design-tokens.css">
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="landing.css">
+  <link rel="stylesheet" href="lead-bot.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo-lp">Pular para o conteúdo principal</a>
+
+  <!-- HEADER INSTITUCIONAL -->
+  <header class="site-header">
+    <a href="/" class="brand-logo" aria-label="Página Inicial do FitGesty">
+      <img src="assets/logo.png" alt="FitGesty" class="brand-logo-img">
+    </a>
+
+    <nav class="nav-links" aria-label="Navegação Principal">
+      <a href="#proposta">O Triângulo Virtuoso</a>
+      <a href="#metricas">Métricas do Gestor</a>
+      <a href="#diferenciais">Diferenciais</a>
+      <a href="#engenharia">Arquitetura Técnica</a>
+    </nav>
+
+    <div class="header-actions" style="display:flex;align-items:center;gap:0.65rem;">
+      <a href="/login.html" class="btn-secondary-action" style="padding: 0.55rem 1.05rem; font-size: 0.85rem; font-weight: 600;">
+        Entrar
+      </a>
+      <button type="button" class="btn-secondary-action" data-open-demo-chat style="padding: 0.55rem 1.05rem; font-size: 0.85rem;">
+        Atendimento com Consultor
+      </button>
+      <button type="button" class="btn-primary-action" onclick="entrarModoDemo()" style="padding: 0.55rem 1.15rem; font-size: 0.85rem; border: none; cursor: pointer;">
+        Testar Sistema Gratuito!
+      </button>
+    </div>
+  </header>
+
+  <main id="conteudo-lp">
+    <!-- HERO SECTION -->
+    <section class="hero-wrap">
+      <h2 class="hero-headline reveal-on-scroll">
+        Atraia mais alunos, elimine o Churn e assuma o controle <em>financeiro da sua academia</em>.
+      </h2>
+
+      <p class="hero-lead reveal-on-scroll">
+        O FitGesty foi desenhado para resolver as duas maiores sangrias do setor fitness: o abandono precoce de planos e a perda de visitantes no site. Gestão e Rentabilidade para Academias com foco em retenção e alta performance.
+      </p>
+
+      <div class="hero-cta-group reveal-on-scroll">
+        <button type="button" class="btn-primary-action" onclick="entrarModoDemo()" style="border: none; cursor: pointer;">
+          Testar Sistema Gratuito!
+        </button>
+        <a href="/login.html" class="btn-secondary-action">
+          Já sou usuário • Entrar
+        </a>
+        <button type="button" class="btn-secondary-action" data-open-demo-chat>
+          Atendimento com Consultor
+        </button>
+      </div>
+
+      <!-- SHOWCASE COM CARDS FLUTUANTES -->
+      <div class="showcase-container reveal-on-scroll">
+        <!-- Floating Badge Esquerdo -->
+        <div class="float-badge float-badge-left">
+          <div style="width:36px;height:36px;border-radius:8px;background:rgba(37,99,235,0.12);display:flex;align-items:center;justify-content:center;color:#2563eb;font-weight:700;">
+            ✓
+          </div>
+          <div style="text-align:left;">
+            <p style="font-size:0.75rem;color:#64748b;font-weight:600;text-transform:uppercase;">Novo Contato Qualificado</p>
+            <strong style="font-size:0.85rem;color:#0f172a;">Lead Qualificado • Musculação & Funcional</strong>
+          </div>
+        </div>
+
+        <!-- Floating Badge Direito -->
+        <div class="float-badge float-badge-right">
+          <div style="width:36px;height:36px;border-radius:8px;background:rgba(37,99,235,0.12);display:flex;align-items:center;justify-content:center;color:#2563eb;font-weight:700;">
+            ⚡
+          </div>
+          <div style="text-align:left;">
+            <p style="font-size:0.75rem;color:#64748b;font-weight:600;text-transform:uppercase;">Taxa de Retenção</p>
+            <strong style="font-size:0.85rem;color:#0f172a;">+18.4% de renovações anuais</strong>
+          </div>
+        </div>
+
+        <!-- Preview do Dashboard -->
+        <div class="dashboard-preview">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="mockup-title">Visão Geral da Academia</span>
+            <span style="font-size:0.75rem;color:#16a34a;font-weight:600;">● Sistema Operacional</span>
+          </div>
+
+          <!-- Mini KPI Card -->
+          <div class="mockup-card-kpi">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+              <span style="font-size:0.8rem;color:#475569;font-weight:600;">Alunos Ativos & Tendência</span>
+              <span style="font-size:0.75rem;color:#16a34a;background:rgba(22,163,74,0.1);padding:2px 8px;border-radius:4px;">+12% mês</span>
+            </div>
+            <div style="font-size:2rem;font-weight:800;color:#0f172a;font-family:var(--font-display);margin-bottom:0.5rem;">
+              142 <span style="font-size:0.9rem;color:#64748b;font-weight:400;">matriculados</span>
+            </div>
+            <svg viewBox="0 0 200 40" style="width:100%;height:36px;overflow:visible;">
+              <path d="M0,32 Q50,22 90,26 T150,12 T200,4" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <!-- Mini Heatmap Card -->
+          <div class="mockup-card-heatmap">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+              <span style="font-size:0.8rem;color:#475569;font-weight:600;">Ocupação por Catraca</span>
+              <span style="font-size:0.75rem;color:#0f172a;background:#e2e8f0;padding:2px 8px;border-radius:4px;">Pico: 18h às 20h</span>
+            </div>
+            <p style="font-size:0.78rem;color:#64748b;margin-bottom:0.75rem;">Visão em tempo real da capacidade física instalada</p>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;">
+              <div style="height:18px;border-radius:3px;background:rgba(37,99,235,0.2);"></div>
+              <div style="height:18px;border-radius:3px;background:rgba(37,99,235,0.5);"></div>
+              <div style="height:18px;border-radius:3px;background:rgba(37,99,235,0.3);"></div>
+              <div style="height:18px;border-radius:3px;background:rgba(234,88,12,0.6);"></div>
+              <div style="height:18px;border-radius:3px;background:#ef4444;"></div>
+              <div style="height:18px;border-radius:3px;background:rgba(37,99,235,0.4);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: O TRIÂNGULO VIRTUOSO -->
+    <section id="proposta" class="content-section">
+      <div style="text-align:center;" class="reveal-on-scroll">
+        <p class="section-eyebrow">Arquitetura de Valor</p>
+        <h2 class="section-heading">O Triângulo Virtuoso do FitGesty</h2>
+        <p class="section-subtext" style="margin: 0 auto;">
+          O proprietário só tem lucro sustentável quando a equipe opera com produtividade e o aluno tem motivos diários para não desistir do treino.
+        </p>
+      </div>
+
+      <div class="value-triad-grid">
+        <!-- 1. O DONO -->
+        <article class="pillar-card reveal-on-scroll">
+          <div class="pillar-icon-box blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>
+            </svg>
+          </div>
+          <h3>1. O Dono da Academia</h3>
+          <p>Decisão estratégica orientada a dados financeiros reais, identificação antecipada de desistências e controle do retorno por metro quadrado.</p>
+          <ul class="pillar-checklist">
+            <li><span class="check-svg">✓</span> Sparkline de tendência e Churn em tempo real</li>
+            <li><span class="check-svg">✓</span> Heatmap semanal de horários de pico e ociosidade</li>
+            <li><span class="check-svg">✓</span> Pipeline comercial com captação direta de alunos</li>
+          </ul>
+        </article>
+
+        <!-- 2. A EQUIPE -->
+        <article class="pillar-card reveal-on-scroll" style="transition-delay: 0.1s;">
+          <div class="pillar-icon-box navy">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <h3>2. A Equipe Operacional</h3>
+          <p>Ambiente seguro para recepção e instrutores executarem tarefas diárias, agendarem salas e gerenciarem inventário de aparelhos sem falhas.</p>
+          <ul class="pillar-checklist">
+            <li><span class="check-svg">✓</span> Reservas coletivas com isolamento atômico seguro</li>
+            <li><span class="check-svg">✓</span> Delegação ágil de atividades de manutenção</li>
+            <li><span class="check-svg">✓</span> Sem acesso a dados fiscais ou métricas do dono</li>
+          </ul>
+        </article>
+
+        <!-- 3. O ALUNO -->
+        <article class="pillar-card reveal-on-scroll" style="transition-delay: 0.2s;">
+          <div class="pillar-icon-box cyan">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6Z"/>
+            </svg>
+          </div>
+          <h3>3. O Aluno & Atleta</h3>
+          <p>O maior inimigo da mensalidade é o desânimo. Um portal atlético de alto nível que transforma o treino em uma jornada de progressão diária.</p>
+          <ul class="pillar-checklist">
+            <li><span class="check-svg">✓</span> Activity Metric Rings em SVG (Move/Calorias/Hidratação)</li>
+            <li><span class="check-svg">✓</span> Progressão de Níveis & XP com barra dinâmica</li>
+            <li><span class="check-svg">✓</span> Acessibilidade digital (Alto Contraste WCAG 2.1 AA)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: DIFERENCIAIS DE MERCADO -->
+    <section id="diferenciais" class="content-section" style="padding-top:2rem;">
+      <div style="text-align:left;" class="reveal-on-scroll">
+        <p class="section-eyebrow">Inovação e Tecnologia</p>
+        <h2 class="section-heading">Construído para substituir o legado.</h2>
+        <p class="section-subtext">
+          Chega de sistemas pesados e formulários estáticos que ninguém preenche.
+        </p>
+      </div>
+
+      <div class="bento-features">
+        <article class="bento-item-big reveal-on-scroll">
+          <span style="font-size:0.75rem;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:0.06em;">Captação Inteligente</span>
+          <h3 style="font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:#0f172a;margin:0.6rem 0 0.8rem;">
+            Motor Conversacional de Matrículas
+          </h3>
+          <p style="color:#475569;line-height:1.6;font-size:0.95rem;margin-bottom:1.5rem;">
+            Formulários de contato tradicionais convertem menos de 2%. Nosso assistente interativo dialógico simula conversa em tempo real, valida o nome do interessado, formata o WhatsApp e persiste o contato instantaneamente no sistema para a recepção fechar a matrícula.
+          </p>
+          <button type="button" class="btn-secondary-action" data-open-demo-chat>
+            Atendimento com Consultor
+          </button>
+        </article>
+
+        <article id="engenharia" class="bento-item-side reveal-on-scroll" style="transition-delay: 0.15s;">
+          <span style="font-size:0.75rem;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:0.06em;">Soberania de Infraestrutura</span>
+          <h3 style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:#0f172a;margin:0.6rem 0 0.8rem;">
+            Zero Dependências & Banco Atômico
+          </h3>
+          <p style="color:#475569;line-height:1.6;font-size:0.92rem;margin-bottom:1rem;">
+            Construído em Node.js nativo sem pacotes externos vulneráveis. Roda com menos de 30MB de memória e transações atômicas, garantindo que duas reservas nunca colidam.
+          </p>
+          <div style="font-family:var(--font-mono);font-size:0.8rem;color:#2563eb;background:#f1f5f9;padding:0.6rem 0.8rem;border-radius:6px;border:1px solid #e2e8f0;">
+            $ 0 custos ocultos de licença de SGBD
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER MINIMALISTA -->
+  <footer class="minimal-footer">
+    <div class="footer-inner">
+      <div class="footer-text">
+        <strong>FitGesty — Sistema Corporativo de Gestão e Rentabilidade para Academias</strong>
+      </div>
+      <div style="display:flex;gap:0.65rem;align-items:center;">
+        <a href="/login.html" class="btn-secondary-action" style="font-size:0.85rem;padding:0.6rem 1.1rem;">
+          Entrar na Conta
+        </a>
+        <button type="button" class="btn-primary-action" onclick="entrarModoDemo()" style="font-size:0.85rem;padding:0.6rem 1.1rem;border:none;cursor:pointer;">
+          Testar Sistema Gratuito!
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT DE REVEAL AO SCROLL, MODO DEMO & INTEGRAÇÃO LEAD-BOT -->
+  <script>
+    function entrarModoDemo() {
+      localStorage.setItem('fit_token', 'demo_token_fitgesty');
+      localStorage.setItem('fit_role', 'admin');
+      localStorage.setItem('fit_is_demo', 'true');
+      localStorage.setItem('fit_academy_id', 'demo_academy');
+      localStorage.setItem('fit_academy_name', 'Academia Demonstração');
+      window.location.href = '/admin.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+    });
+  </script>
+  <script src="lead-bot.js"></script>
+  <!-- Botão Flutuante do Consultor Virtual FitGesty -->
+  <button type="button" data-open-demo-chat aria-label="Falar com Consultor FitGesty"
+    style="position:fixed;bottom:20px;right:20px;z-index:9990;padding:0.85rem 1.25rem;border-radius:999px;border:none;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;font-weight:700;font-size:0.9rem;box-shadow:0 8px 24px rgba(249,115,22,0.45);cursor:pointer;display:flex;align-items:center;gap:0.5rem;">
+     Consultor Online
+  </button>
+</body>
+</html>

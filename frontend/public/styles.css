@@ -1,0 +1,592 @@
+/* ==========================================================================
+   FitGesty — Sistema de Design Ultra Premium (Fitness OLED High-Energy)
+   Componentes, Formulários, Tabelas, Kanban, Modais e Responsividade
+   ========================================================================== */
+
+@import './base.css';
+
+/* ── FORM GROUP (admin.html / login.html) ───────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.form-group label {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ── BOTÕES GERAIS ──────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #f97316, #ea580c) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 3px 14px rgba(249,115,22,0.35);
+}
+.btn-primary:hover { box-shadow: 0 5px 20px rgba(249,115,22,0.45); transform: translateY(-1px); }
+
+.btn-success {
+  background: rgba(16,185,129,0.15) !important;
+  color: var(--accent) !important;
+  border-color: rgba(16,185,129,0.35) !important;
+}
+.btn-success:hover { background: var(--accent) !important; color: #07090f !important; }
+
+.btn-warning {
+  background: rgba(245,158,11,0.12) !important;
+  color: var(--warning) !important;
+  border-color: rgba(245,158,11,0.3) !important;
+}
+.btn-warning:hover { background: var(--warning) !important; color: #07090f !important; }
+
+.btn-danger {
+  background: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: rgba(244,63,94,0.3) !important;
+}
+.btn-danger:hover { background: var(--danger) !important; color: #fff !important; box-shadow: 0 0 14px rgba(244,63,94,0.4); }
+
+/* ── TABELAS ────────────────────────────────────────────────────────────── */
+.table-wrap,
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--panel);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+  text-align: left;
+}
+
+caption {
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+thead th,
+th {
+  background: #0a0d15 !important;
+  color: var(--primary-light) !important;
+  font-weight: 700;
+  font-size: 0.77rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 1rem 1.4rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+tbody td,
+td {
+  padding: 1rem 1.4rem;
+  border-bottom: 1px solid rgba(139,92,246,0.08) !important;
+  font-size: 0.92rem;
+  vertical-align: middle;
+  background: var(--panel) !important;
+  color: var(--text-sub) !important;
+  transition: background 0.15s;
+}
+
+tbody tr:hover td,
+tr:hover td {
+  background: #131926 !important;
+}
+
+tbody tr:last-child td { border-bottom: none !important; }
+
+/* ── ACTIONS (botões de tabela) ─────────────────────────────────────────── */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.82rem;
+  font-family: var(--font);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-sub) !important;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.actions button:first-child:hover {
+  border-color: var(--primary) !important;
+  background: rgba(167,139,250,0.1) !important;
+  color: var(--primary-light) !important;
+}
+.actions button:last-child {
+  background: rgba(244,63,94,0.1) !important;
+  color: var(--danger) !important;
+  border-color: rgba(244,63,94,0.25) !important;
+}
+.actions button:last-child:hover {
+  background: var(--danger) !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(244,63,94,0.35);
+}
+.actions button:only-child:hover {
+  background: var(--danger) !important;
+  color: #fff !important;
+}
+
+/* ── LISTAS (cards em grade) ────────────────────────────────────────────── */
+.list,
+#tasksList,
+#announcementsList,
+#resourcesList,
+#resourcesCardsList {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.item,
+.task-card,
+.panel,
+article.item,
+article.task-card {
+  background: var(--panel) !important;
+  border: 1px solid var(--panel-border) !important;
+  border-radius: var(--radius) !important;
+  padding: 1.5rem !important;
+  box-shadow: var(--shadow-card) !important;
+  color: var(--text) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.item:hover,
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card), var(--glow-accent-lime);
+}
+
+.item h3,
+.task-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text) !important;
+  margin-bottom: 0.4rem;
+}
+.item p,
+.task-card p { color: var(--text-sub) !important; font-size: 0.92rem; }
+.meta { color: var(--muted) !important; font-size: 0.83rem; margin-bottom: 0.5rem; }
+
+/* ── KANBAN ─────────────────────────────────────────────────────────────── */
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+  .kanban-board { grid-template-columns: 1fr; }
+}
+
+.kanban-col {
+  background: rgba(14,17,23,0.7);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  min-height: 200px;
+}
+
+.kanban-col h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.kanban-col .task-card {
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+}
+.kanban-col .task-card:last-child { margin-bottom: 0; }
+
+/* ── BADGES ─────────────────────────────────────────────────────────────── */
+.badge,
+span.badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(16,185,129,0.14) !important;
+  color: var(--accent) !important;
+  border: 1px solid rgba(16,185,129,0.3) !important;
+  white-space: nowrap;
+}
+
+.badge.danger,
+.badge-danger,
+.badge.inativo,
+.badge.alta {
+  background: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: rgba(244,63,94,0.3) !important;
+}
+
+.badge.pendente,
+.badge-warning,
+.badge.média {
+  background: rgba(245,158,11,0.12) !important;
+  color: var(--warning) !important;
+  border-color: rgba(245,158,11,0.3) !important;
+}
+
+.badge-success {
+  background: rgba(16,185,129,0.14) !important;
+  color: var(--accent) !important;
+  border-color: rgba(16,185,129,0.3) !important;
+}
+
+/* ── SPLIT GRID (recursos + salas) ─────────────────────────────────────── */
+.split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 1024px) { .split-grid { grid-template-columns: 1fr; } }
+
+.split-grid h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--primary-light);
+}
+
+/* ── ANNOUNCEMENTS / MURAL ──────────────────────────────────────────────── */
+.grid-announcements {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.card-announcement {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s;
+}
+.card-announcement:hover { transform: translateY(-2px); }
+.card-announcement h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.card-announcement p { color: var(--text-sub); font-size: 0.9rem; }
+
+/* ── LOGIN PAGE ─────────────────────────────────────────────────────────── */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  padding: 1rem;
+}
+
+.login-card {
+  background: var(--panel) !important;
+  border: 1px solid rgba(139,92,246,0.3) !important;
+  border-radius: var(--radius);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), var(--glow-accent-lime);
+}
+
+.login-header { text-align: center; margin-bottom: 2rem; }
+.login-header h2 {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.1em;
+}
+
+.login-header h2 .logo-fit {
+  font-weight: 300;
+  color: #e2e8f0;
+}
+
+.login-header h2 .logo-gesty {
+  font-weight: 900;
+  background: linear-gradient(135deg, #84cc16 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.login-header p { color: var(--muted); font-size: 0.92rem; }
+
+.alert-error {
+  background: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border: 1px solid rgba(244,63,94,0.3);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: none;
+}
+
+.credentials-hint {
+  margin-top: 1.5rem;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px dashed rgba(139,92,246,0.3) !important;
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.credentials-hint strong { color: var(--text-sub); }
+.credentials-hint code {
+  background: rgba(167,139,250,0.15);
+  color: var(--primary-light);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+/* ── ADMIN: METRIC CARDS ────────────────────────────────────────────────── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, #84cc16, #06b6d4);
+}
+.metric-card .value {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.metric-card .label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* ── ADMIN SECTIONS ─────────────────────────────────────────────────────── */
+.admin-sections {
+  background: var(--panel) !important;
+  border: 1px solid var(--panel-border) !important;
+  border-radius: var(--radius) !important;
+  padding: 2rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* ── FUNCIONÁRIO: RESERVAS ──────────────────────────────────────────────── */
+.sub-title-table {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-light);
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+/* ── PANEL INPUT SEARCH ─────────────────────────────────────────────────── */
+.panel {
+  background: var(--panel) !important;
+  border: 1px solid var(--panel-border) !important;
+  border-radius: var(--radius) !important;
+  padding: 1.25rem !important;
+  margin-bottom: 1.5rem;
+}
+
+#memberSearch {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: #060810 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm);
+  color: var(--text) !important;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  margin-top: 0.4rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#memberSearch:focus {
+  outline: none;
+  border-color: var(--border-focus) !important;
+  box-shadow: var(--glow-accent-lime);
+}
+#memberSearch::placeholder { color: var(--muted); }
+
+/* ── TEXT MUTED HELPER ──────────────────────────────────────────────────── */
+.text-muted { color: var(--muted) !important; font-style: italic; padding: 1.5rem; }
+
+/* ── SCROLLBAR CUSTOM ───────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.55); }
+
+/* ── LOGO COMPATIBILITY ─────────────────────────────────────────────────── */
+.login-header .logo-fitgesty,
+.login-header .logo-fitgestao {
+  text-align: center;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────────────────────── */
+footer {
+  background: rgba(7,9,15,0.95);
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 2.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+
+/* ── RESPONSIVIDADE ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  header, .topbar { padding: 1.2rem 1.25rem; }
+  main { padding: 1.25rem; }
+  .tabs { padding: 0 0.5rem; }
+  .tab { padding: 0.85rem 1rem; font-size: 0.85rem; }
+  .form-grid { padding: 1.25rem; gap: 1rem; }
+  .kanban-board { grid-template-columns: 1fr; }
+  .split-grid { grid-template-columns: 1fr; }
+}
+
+/* ── REFINOS VISUAIS: TEMA CLARO INSTITUCIONAL (LIGHT THEME) ── */
+body.light-theme thead th,
+body.light-theme th {
+  background: #e2e8f0 !important;
+  color: #1e293b !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+body.light-theme tbody td,
+body.light-theme td {
+  background: #ffffff !important;
+  color: #1e293b !important;
+  border-bottom: 1px solid #eef2f6 !important;
+}
+
+body.light-theme tbody tr:hover td,
+body.light-theme tr:hover td {
+  background: #f1f5f9 !important;
+}
+
+body.light-theme .reservas-card,
+body.light-theme .table-wrap,
+body.light-theme .table-container {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+body.light-theme header,
+body.light-theme .topbar {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+}
+
+body.light-theme .section-title,
+body.light-theme .sub-title-table {
+  color: #0f172a !important;
+}
+
+body.light-theme .user-badge {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+body.light-theme .actions button {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+body.light-theme .actions button:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}

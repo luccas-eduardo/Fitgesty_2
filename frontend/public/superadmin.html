@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitGesty — Painel Mestre (Super Admin)</title>
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="auth-guard.js"></script>
+  <script src="theme-manager.js"></script>
+  <link rel="stylesheet" href="fitgesty-ui.css" />
+  <style>
+    .fg-svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .fg-svg-sm { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .fg-sa-plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.9rem; margin-bottom: 1.1rem; }
+  </style>
+</head>
+<body class="light-theme">
+  <div class="fg-shell">
+    <!-- SIDEBAR DO SUPER ADMIN -->
+    <aside id="appSidebar" class="fg-sidebar" aria-label="Menu mestre">
+      <div>
+        <div class="fg-brand">
+          <div class="fg-brand-icon">
+            <svg class="fg-svg" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div>
+            <div class="fg-brand-title">FitGesty</div>
+            <div class="fg-brand-sub">Administração SaaS</div>
+          </div>
+        </div>
+
+        <div class="fg-unit-box">
+          <div class="fg-unit-label">Ambiente</div>
+          <div class="fg-unit-name">Login Mestre (Plataforma)</div>
+        </div>
+
+        <div class="fg-nav-group">Plataforma</div>
+        <nav class="fg-nav">
+          <button type="button" class="fg-nav-item active" data-view="sa-view-empresas" data-crumb="Academias clientes" onclick="switchSaView('sa-view-empresas')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/></svg>
+              Academias clientes
+            </span>
+            <span id="saBadgeAcademies" class="fg-nav-badge">0</span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="sa-view-financeiro" data-crumb="Planos e Financeiro SaaS" onclick="switchSaView('sa-view-financeiro')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Planos e Financeiro
+            </span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="sa-view-leads" data-crumb="Leads comerciais" onclick="switchSaView('sa-view-leads')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Leads comerciais
+            </span>
+            <span id="saBadgeLeads" class="fg-nav-badge">0</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="fg-sidebar-bottom">
+        <div class="fg-help-card">
+          <strong>Controle central SaaS</strong>
+          <span>Crie academias, ajuste valores dos planos SaaS e acompanhe suas despesas.</span>
+        </div>
+
+        <div class="fg-a11y-row">
+          <button id="themeToggleBtn" type="button" class="fg-btn fg-btn-outline" style="padding:0.42rem;font-size:0.73rem;">Tema</button>
+          <button id="contrastButton" type="button" aria-pressed="false" class="fg-btn fg-btn-outline" style="padding:0.42rem;font-size:0.73rem;">Contraste</button>
+          <button id="fontButton" type="button" aria-pressed="false" class="fg-btn fg-btn-outline" style="padding:0.42rem;font-size:0.73rem;">A+</button>
+        </div>
+
+        <button type="button" class="fg-btn fg-btn-outline" onclick="logoutSa()" style="width:100%;color:var(--fg-text-sec);font-size:0.8rem;">
+          <svg class="fg-svg-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sair do painel mestre
+        </button>
+      </div>
+    </aside>
+
+    <!-- ÁREA DIREITA -->
+    <div class="fg-main-wrap">
+      <header class="fg-topbar">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <button type="button" class="fg-btn fg-btn-outline mobile-menu-btn" onclick="document.getElementById('appSidebar').classList.toggle('open')">
+            <svg class="fg-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="fg-breadcrumb">
+            <span>FitGesty SaaS</span>
+            <span>/</span>
+            <strong id="saTopCrumb">Academias clientes</strong>
+          </div>
+        </div>
+
+        <div class="fg-topbar-right">
+          <div class="fg-user-pill" style="border-left:none;">
+            <div class="fg-avatar">M</div>
+            <div style="line-height:1.2;">
+              <div style="font-size:0.82rem;font-weight:700;">Super Admin</div>
+              <div style="font-size:0.72rem;color:var(--fg-text-muted);">Acesso Mestre</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="fg-content">
+        <!-- 1. ACADEMIAS CLIENTES -->
+        <section id="sa-view-empresas" class="view-panel active">
+          <div class="fg-page-head">
+            <div>
+              <h1>Academias clientes</h1>
+              <p>Cadastre novas empresas, crie as credenciais dos gestores e gerencie planos ativos.</p>
+            </div>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Total de academias</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span></div>
+              <div id="saTotalAcad" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Unidades na plataforma</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Academias ativas</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+              <div id="saAtivasAcad" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Operando normalmente</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Receita mensal SaaS</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span></div>
+              <div id="saMrrVal" class="fg-kpi-val">R$ 0,00</div>
+              <div id="saLucroSub" class="fg-kpi-sub">Líquido: R$ 0,00</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Leads comerciais</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></div>
+              <div id="saLeadsTotal" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Contatos interessados</div>
+            </div>
+          </div>
+
+          <!-- FORMULÁRIO DE CADASTRO DE NOVA EMPRESA -->
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Cadastrar nova empresa + login do gestor</h3>
+                <p class="fg-card-sub">Provisiona um ambiente isolado para a academia e libera imediatamente o acesso do administrador.</p>
+              </div>
+              <span class="fg-badge blue">Novo tenant</span>
+            </div>
+
+            <form id="formCreateAcademy">
+              <div class="fg-form-grid" style="grid-template-columns:repeat(5,1fr);">
+                <div class="fg-field">
+                  <label for="acadName">Nome da empresa / academia</label>
+                  <input type="text" id="acadName" class="fg-input" required placeholder="Ex.: Studio Fit Center">
+                </div>
+                <div class="fg-field">
+                  <label for="ownerName">Nome do gestor responsável</label>
+                  <input type="text" id="ownerName" class="fg-input" required placeholder="Ex.: João Mendes">
+                </div>
+                <div class="fg-field">
+                  <label for="ownerEmail">E-mail de login do gestor</label>
+                  <input type="email" id="ownerEmail" class="fg-input" required placeholder="gestor@academia.com">
+                </div>
+                <div class="fg-field">
+                  <label for="ownerPassword">Senha inicial</label>
+                  <input type="text" id="ownerPassword" class="fg-input" minlength="4" required placeholder="Mínimo 4 caracteres">
+                </div>
+                <div class="fg-field">
+                  <label for="acadPlan">Plano SaaS</label>
+                  <select id="acadPlan" class="fg-select"></select>
+                </div>
+              </div>
+              <button type="submit" id="btnCreateAcademy" class="fg-btn fg-btn-primary">Criar empresa e login</button>
+            </form>
+          </article>
+
+          <!-- LISTA DE EMPRESAS -->
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Empresas cadastradas</h3>
+                <p class="fg-card-sub">Gerencie status, planos e acessos de todas as unidades.</p>
+              </div>
+              <input type="text" id="buscaSaAcad" class="fg-input" style="width:240px;" placeholder="Buscar empresa ou e-mail" oninput="renderEmpresasSa()">
+            </div>
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Empresa / Academia</th>
+                    <th>Gestor & E-mail</th>
+                    <th>Plano</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tableSaAcademies"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 2. PLANOS SAAS & DESPESAS DA PLATAFORMA (LOGIN MESTRE) -->
+        <section id="sa-view-financeiro" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Planos e Financeiro SaaS</h1>
+              <p>Altere os valores dos planos vendidos às academias, crie novos planos e controle as despesas da plataforma.</p>
+            </div>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Receita mensal (MRR)</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span></div>
+              <div id="saFinReceita" class="fg-kpi-val">R$ 0,00</div>
+              <div class="fg-kpi-sub">Soma das academias ativas</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Despesas da plataforma</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span></div>
+              <div id="saFinDespesas" class="fg-kpi-val" style="color:var(--fg-danger);">R$ 0,00</div>
+              <div class="fg-kpi-sub">Infraestrutura, anúncios e custos</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Resultado líquido SaaS</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span></div>
+              <div id="saFinLucro" class="fg-kpi-val">R$ 0,00</div>
+              <div class="fg-kpi-sub">Receita menos despesas</div>
+            </div>
+          </div>
+
+          <!-- EDITOR DE PLANOS SAAS -->
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Planos SaaS para academias</h3>
+                <p class="fg-card-sub">Edite nome, valor mensal ou crie novos planos comerciais.</p>
+              </div>
+              <button type="button" class="fg-btn fg-btn-primary" onclick="salvarPlanosSaas()">Salvar valores dos planos</button>
+            </div>
+
+            <div id="saPlanosEditor" class="fg-sa-plan-grid"></div>
+
+            <form id="formNovoPlanoSaas" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;padding-top:1rem;border-top:1px solid var(--fg-border);">
+              <div class="fg-field" style="flex:2;min-width:200px;">
+                <label for="saNovoPlanoNome">Nome do novo plano SaaS</label>
+                <input type="text" id="saNovoPlanoNome" class="fg-input" placeholder="Ex.: Franquia / Rede" required>
+              </div>
+              <div class="fg-field" style="flex:1;min-width:140px;">
+                <label for="saNovoPlanoPreco">Valor mensal (R$)</label>
+                <input type="number" step="0.01" min="0" id="saNovoPlanoPreco" class="fg-input" placeholder="699,00" required>
+              </div>
+              <button type="submit" class="fg-btn fg-btn-outline">+ Lançar novo plano</button>
+            </form>
+          </article>
+
+          <!-- LANÇAMENTO DE DESPESAS DO LOGIN MESTRE -->
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Lançar despesa da plataforma</h3>
+                <p class="fg-card-sub">Registre custos com servidores (Render/Supabase), marketing, suporte ou impostos.</p>
+              </div>
+            </div>
+
+            <form id="formSaNovaDespesa">
+              <div class="fg-form-grid">
+                <div class="fg-field">
+                  <label for="saDespMes">Mês de referência</label>
+                  <input type="month" id="saDespMes" class="fg-input" required>
+                </div>
+                <div class="fg-field">
+                  <label for="saDespCategoria">Categoria</label>
+                  <select id="saDespCategoria" class="fg-select" required>
+                    <option value="Infraestrutura Cloud (Render/Supabase)">Infraestrutura Cloud (Render/Supabase)</option>
+                    <option value="Tráfego Pago / Google Ads">Tráfego Pago / Google Ads</option>
+                    <option value="Domínio & Certificados">Domínio & Certificados</option>
+                    <option value="Suporte / Equipe">Suporte / Equipe</option>
+                    <option value="Impostos / Taxas">Impostos / Taxas</option>
+                    <option value="Outros">Outros</option>
+                  </select>
+                </div>
+                <div class="fg-field">
+                  <label for="saDespDescricao">Descrição</label>
+                  <input type="text" id="saDespDescricao" class="fg-input" placeholder="Ex.: Servidor Render Pro" required>
+                </div>
+                <div class="fg-field">
+                  <label for="saDespValor">Valor (R$)</label>
+                  <input type="number" step="0.01" min="0.01" id="saDespValor" class="fg-input" placeholder="0,00" required>
+                </div>
+              </div>
+              <button type="submit" class="fg-btn fg-btn-primary">Adicionar despesa</button>
+            </form>
+          </article>
+
+          <!-- EXTRATO DE DESPESAS DO LOGIN MESTRE -->
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Extrato de despesas SaaS</h3>
+                <p id="saExtratoDespesasSub" class="fg-card-sub">0 lançamentos • Total de R$ 0,00</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <input type="month" id="saFiltroMesDespesas" class="fg-input" style="width:auto;" onchange="renderTabelaDespesasSa()">
+                <button type="button" class="fg-btn fg-btn-outline" onclick="document.getElementById('saFiltroMesDespesas').value='';renderTabelaDespesasSa()">Todos os meses</button>
+              </div>
+            </div>
+
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Mês</th>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tableSaDespesas"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 3. LEADS COMERCIAIS -->
+        <section id="sa-view-leads" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Leads comerciais</h1>
+              <p>Gestores interessados capturados pela página inicial do FitGesty.</p>
+            </div>
+          </div>
+
+          <article class="fg-card">
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>WhatsApp</th>
+                    <th>Segmento</th>
+                    <th>Tamanho</th>
+                    <th>Origem</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tableSaLeads"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <footer class="fg-footer-bar">
+          <span><strong>FitGesty</strong> • Administração SaaS Multi-Tenant</span>
+          <span>Login Mestre</span>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const saRole = localStorage.getItem('fit_role');
+    const saToken = localStorage.getItem('fit_token');
+    if (!saToken || saRole !== 'superadmin') {
+      window.location.href = '/login.html';
+    }
+
+    const escapeHtml = (val = '') =>
+      String(val).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    const formatBRL = (val) =>
+      Number(val || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    function showToast(message, type = 'success') {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:380px;';
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.style.cssText = `padding:12px 16px;border-radius:10px;font-size:0.84rem;font-weight:600;color:#fff;background:${type === 'error' ? '#dc2626' : '#16a34a'};box-shadow:0 10px 25px rgba(15,23,42,0.18);`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    function switchSaView(viewId) {
+      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(viewId)?.classList.add('active');
+      document.querySelectorAll('.fg-nav-item').forEach(btn => {
+        const active = btn.getAttribute('data-view') === viewId;
+        btn.classList.toggle('active', active);
+        if (active) document.getElementById('saTopCrumb').textContent = btn.getAttribute('data-crumb') || '';
+      });
+      document.getElementById('appSidebar')?.classList.remove('open');
+    }
+
+    function logoutSa() {
+      localStorage.removeItem('fit_role');
+      localStorage.removeItem('fit_token');
+      window.location.href = '/login.html';
+    }
+
+    async function reqSa(url, method = 'GET', body = null) {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${saToken}`
+        },
+        body: body ? JSON.stringify(body) : null
+      });
+      const text = await res.text();
+      let data = null;
+      try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+      if (!res.ok) throw new Error((data && data.error) || `Erro HTTP ${res.status}`);
+      return data;
+    }
+
+    // ── PLANOS SAAS & DESPESAS DO SUPER ADMIN ───────────────────────────────
+    const SA_PLANOS_KEY = 'fitgesty_superadmin_planos_v1';
+    const SA_DESPESAS_KEY = 'fitgesty_superadmin_despesas_v1';
+
+    const SA_PLANOS_PADRAO = [
+      { id: 'Starter', nome: 'Starter (1 unidade)', preco: 149 },
+      { id: 'Pro', nome: 'Pro (Completo)', preco: 299 },
+      { id: 'Enterprise', nome: 'Enterprise Multi-Unidade', preco: 499 }
+    ];
+
+    let saPlanos = JSON.parse(localStorage.getItem(SA_PLANOS_KEY) || 'null') || SA_PLANOS_PADRAO;
+    let saDespesas = JSON.parse(localStorage.getItem(SA_DESPESAS_KEY) || '[]');
+    let saAcademies = [];
+
+    function renderPlanosSaas() {
+      const sel = document.getElementById('acadPlan');
+      if (sel) {
+        sel.innerHTML = saPlanos.map(p =>
+          `<option value="${escapeHtml(p.id)}">${escapeHtml(p.nome)} (${formatBRL(p.preco)}/mês)</option>`
+        ).join('');
+      }
+
+      const editor = document.getElementById('saPlanosEditor');
+      if (editor) {
+        editor.innerHTML = saPlanos.map((p, idx) => `
+          <div style="padding:1rem;border:1px solid var(--fg-border);border-radius:10px;background:var(--fg-surface-muted);display:flex;flex-direction:column;gap:0.45rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <label style="font-size:0.74rem;font-weight:600;color:var(--fg-text-sec);">Nome do plano SaaS</label>
+              ${saPlanos.length > 1 ? `<button type="button" onclick="removerPlanoSaas(${idx})" style="border:none;background:transparent;color:var(--fg-danger);font-size:0.74rem;cursor:pointer;">Excluir</button>` : ''}
+            </div>
+            <input type="text" class="fg-input sa-plano-nome" data-idx="${idx}" value="${escapeHtml(p.nome)}">
+            <label style="font-size:0.74rem;font-weight:600;color:var(--fg-text-sec);">Valor mensal (R$)</label>
+            <input type="number" step="0.01" class="fg-input sa-plano-preco" data-idx="${idx}" value="${Number(p.preco || 0)}">
+          </div>
+        `).join('');
+      }
+      atualizarResumoFinanceiroSa();
+    }
+
+    function salvarPlanosSaas() {
+      document.querySelectorAll('.sa-plano-nome').forEach(inp => {
+        const idx = Number(inp.getAttribute('data-idx'));
+        if (saPlanos[idx]) {
+          saPlanos[idx].nome = inp.value.trim() || saPlanos[idx].nome;
+        }
+      });
+      document.querySelectorAll('.sa-plano-preco').forEach(inp => {
+        const idx = Number(inp.getAttribute('data-idx'));
+        if (saPlanos[idx]) {
+          saPlanos[idx].preco = Number(inp.value || 0);
+        }
+      });
+      localStorage.setItem(SA_PLANOS_KEY, JSON.stringify(saPlanos));
+      renderPlanosSaas();
+      renderEmpresasSa();
+      showToast('Valores dos planos SaaS atualizados!');
+    }
+
+    function removerPlanoSaas(idx) {
+      saPlanos.splice(idx, 1);
+      localStorage.setItem(SA_PLANOS_KEY, JSON.stringify(saPlanos));
+      renderPlanosSaas();
+      showToast('Plano SaaS removido.');
+    }
+
+    document.getElementById('formNovoPlanoSaas')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('saNovoPlanoNome').value.trim();
+      const preco = Number(document.getElementById('saNovoPlanoPreco').value || 0);
+      if (!nome) return;
+      saPlanos.push({ id: nome, nome, preco });
+      localStorage.setItem(SA_PLANOS_KEY, JSON.stringify(saPlanos));
+      e.target.reset();
+      renderPlanosSaas();
+      showToast(`Plano SaaS "${nome}" lançado!`);
+    });
+
+    function obterPrecoPlanoSaas(planKey) {
+      const k = String(planKey || '').toLowerCase();
+      const encontrado = saPlanos.find(p =>
+        String(p.id).toLowerCase() === k ||
+        String(p.nome).toLowerCase().includes(k) ||
+        k.includes(String(p.id).toLowerCase())
+      );
+      return encontrado ? Number(encontrado.preco || 0) : 299;
+    }
+
+    function formatarLabelPlanoSaas(planKey) {
+      const k = String(planKey || '').toLowerCase();
+      const encontrado = saPlanos.find(p =>
+        String(p.id).toLowerCase() === k ||
+        String(p.nome).toLowerCase().includes(k)
+      );
+      if (encontrado) return `${encontrado.nome} (${formatBRL(encontrado.preco)}/mês)`;
+      return `${planKey || 'Pro'} (${formatBRL(obterPrecoPlanoSaas(planKey))}/mês)`;
+    }
+
+    function atualizarResumoFinanceiroSa() {
+      const ativas = saAcademies.filter(a => a.status === 'Ativa');
+      const receita = ativas.reduce((acc, a) => acc + obterPrecoPlanoSaas(a.plan), 0);
+      const totalDespesas = saDespesas.reduce((acc, d) => acc + Number(d.valor || 0), 0);
+      const lucro = receita - totalDespesas;
+
+      document.getElementById('saMrrVal').textContent = formatBRL(receita);
+      document.getElementById('saLucroSub').textContent = `Líquido: ${formatBRL(lucro)}`;
+      document.getElementById('saFinReceita').textContent = formatBRL(receita);
+      document.getElementById('saFinDespesas').textContent = formatBRL(totalDespesas);
+      const lucroEl = document.getElementById('saFinLucro');
+      lucroEl.textContent = formatBRL(lucro);
+      lucroEl.style.color = lucro >= 0 ? 'var(--fg-success)' : 'var(--fg-danger)';
+    }
+
+    function renderTabelaDespesasSa() {
+      const filtroMes = document.getElementById('saFiltroMesDespesas')?.value || '';
+      const filtradas = filtroMes ? saDespesas.filter(d => d.mes === filtroMes) : saDespesas;
+      const total = filtradas.reduce((acc, d) => acc + Number(d.valor || 0), 0);
+
+      document.getElementById('saExtratoDespesasSub').textContent = `${filtradas.length} lançamento(s) • Total de ${formatBRL(total)}`;
+
+      const tb = document.getElementById('tableSaDespesas');
+      if (!tb) return;
+
+      tb.innerHTML = filtradas.length === 0
+        ? '<tr><td colspan="5" style="text-align:center;color:var(--fg-text-muted);padding:1.5rem;">Nenhuma despesa SaaS lançada.</td></tr>'
+        : filtradas.map(d => `<tr>
+            <td><strong>${escapeHtml(d.mes || '—')}</strong></td>
+            <td><span class="fg-badge blue">${escapeHtml(d.categoria || 'Outros')}</span></td>
+            <td>${escapeHtml(d.descricao || '')}</td>
+            <td style="color:var(--fg-danger);font-weight:600;">${formatBRL(d.valor)}</td>
+            <td><button type="button" class="fg-btn fg-btn-outline" style="padding:0.35rem 0.65rem;font-size:0.75rem;color:var(--fg-danger);" onclick="excluirDespesaSa('${escapeHtml(d.id)}')">Excluir</button></td>
+          </tr>`).join('');
+    }
+
+    document.getElementById('formSaNovaDespesa')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const mes = document.getElementById('saDespMes').value;
+      const categoria = document.getElementById('saDespCategoria').value;
+      const descricao = document.getElementById('saDespDescricao').value.trim();
+      const valor = Number(document.getElementById('saDespValor').value || 0);
+
+      saDespesas.unshift({ id: `sa_d_${Date.now()}`, mes, categoria, descricao, valor });
+      localStorage.setItem(SA_DESPESAS_KEY, JSON.stringify(saDespesas));
+      e.target.reset();
+      document.getElementById('saDespMes').value = mes;
+      renderTabelaDespesasSa();
+      atualizarResumoFinanceiroSa();
+      showToast('Despesa SaaS registrada!');
+    });
+
+    function excluirDespesaSa(id) {
+      saDespesas = saDespesas.filter(d => d.id !== id);
+      localStorage.setItem(SA_DESPESAS_KEY, JSON.stringify(saDespesas));
+      renderTabelaDespesasSa();
+      atualizarResumoFinanceiroSa();
+      showToast('Despesa removida.');
+    }
+
+    // ── EMPRESAS CLIENTES & LEADS ───────────────────────────────────────────
+    function renderEmpresasSa() {
+      const q = (document.getElementById('buscaSaAcad')?.value || '').toLowerCase();
+      const filtradas = saAcademies.filter(a =>
+        !q ||
+        String(a.name || '').toLowerCase().includes(q) ||
+        String(a.ownerEmail || '').toLowerCase().includes(q)
+      );
+
+      document.getElementById('saTotalAcad').textContent = saAcademies.length;
+      document.getElementById('saBadgeAcademies').textContent = saAcademies.length;
+      document.getElementById('saAtivasAcad').textContent = saAcademies.filter(a => a.status === 'Ativa').length;
+      atualizarResumoFinanceiroSa();
+
+      const tb = document.getElementById('tableSaAcademies');
+      tb.innerHTML = filtradas.length === 0
+        ? '<tr><td colspan="5" style="text-align:center;color:var(--fg-text-muted);padding:1.5rem;">Nenhuma empresa encontrada.</td></tr>'
+        : filtradas.map(a => `
+          <tr>
+            <td><strong>${escapeHtml(a.name)}</strong><br><span style="font-size:0.75rem;color:var(--fg-text-muted);">ID: ${escapeHtml(a.id)}</span></td>
+            <td>${escapeHtml(a.ownerName || 'Gestor')}<br><span style="font-size:0.76rem;color:var(--fg-text-sec);">${escapeHtml(a.ownerEmail || '')}</span></td>
+            <td><span class="fg-badge blue">${escapeHtml(formatarLabelPlanoSaas(a.plan))}</span></td>
+            <td>
+              <select class="fg-select" style="width:130px;padding:0.35rem 0.5rem;font-size:0.78rem;" onchange="alterarStatusAcad('${escapeHtml(a.id)}', this.value)">
+                <option value="Ativa" ${a.status === 'Ativa' ? 'selected' : ''}>Ativa</option>
+                <option value="Suspensa" ${a.status === 'Suspensa' ? 'selected' : ''}>Suspensa</option>
+              </select>
+            </td>
+            <td>
+              <button type="button" class="fg-btn fg-btn-outline" style="padding:0.35rem 0.65rem;font-size:0.75rem;color:var(--fg-danger);" onclick="excluirAcad('${escapeHtml(a.id)}', '${escapeHtml(a.name)}')">Excluir</button>
+            </td>
+          </tr>
+        `).join('');
+    }
+
+    async function carregarPainelSuperAdmin() {
+      try {
+        const [academies, leads] = await Promise.all([
+          reqSa('/api/superadmin/academies'),
+          reqSa('/api/leads').catch(() => [])
+        ]);
+
+        saAcademies = Array.isArray(academies) ? academies : [];
+        const listaLeads = Array.isArray(leads) ? leads : [];
+
+        document.getElementById('saLeadsTotal').textContent = listaLeads.length;
+        document.getElementById('saBadgeLeads').textContent = listaLeads.length;
+
+        renderEmpresasSa();
+
+        const tbLeads = document.getElementById('tableSaLeads');
+        tbLeads.innerHTML = listaLeads.length === 0
+          ? '<tr><td colspan="6" style="text-align:center;color:var(--fg-text-muted);padding:1.5rem;">Nenhum lead recebido ainda.</td></tr>'
+          : listaLeads.map(l => `
+            <tr>
+              <td><strong>${escapeHtml(l.nome)}</strong></td>
+              <td>${escapeHtml(l.whatsapp)}</td>
+              <td>${escapeHtml(l.segmento || '—')}</td>
+              <td>${escapeHtml(l.tamanho_alunos || '—')}</td>
+              <td><span class="fg-badge blue">${escapeHtml(l.utm_source || 'Site')}</span></td>
+              <td><span class="fg-badge green">${escapeHtml(l.status || 'Novo')}</span></td>
+            </tr>
+          `).join('');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    document.getElementById('formCreateAcademy')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnCreateAcademy');
+      btn.disabled = true;
+      btn.textContent = 'Cadastrando...';
+
+      const academyName = document.getElementById('acadName').value.trim();
+      const ownerName = document.getElementById('ownerName').value.trim();
+      const ownerEmail = document.getElementById('ownerEmail').value.trim();
+      const password = document.getElementById('ownerPassword').value;
+      const plan = document.getElementById('acadPlan').value;
+
+      try {
+        await reqSa('/api/superadmin/academies', 'POST', { academyName, ownerName, ownerEmail, password, plan });
+        e.target.reset();
+        showToast(`Empresa "${academyName}" e login do gestor criados com sucesso.`);
+        await carregarPainelSuperAdmin();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Criar empresa e login';
+      }
+    });
+
+    async function alterarStatusAcad(id, status) {
+      try {
+        await reqSa(`/api/superadmin/academies/${id}`, 'PUT', { status });
+        showToast(`Status alterado para ${status}.`);
+        await carregarPainelSuperAdmin();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function excluirAcad(id, name) {
+      if (!confirm(`Deseja realmente excluir a empresa "${name}" e todos os seus dados?`)) return;
+      try {
+        await reqSa(`/api/superadmin/academies/${id}`, 'DELETE');
+        showToast('Empresa excluída.');
+        await carregarPainelSuperAdmin();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    window.onload = () => {
+      const hoje = new Date();
+      const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+      const saDespMes = document.getElementById('saDespMes');
+      if (saDespMes && !saDespMes.value) saDespMes.value = mesAtual;
+
+      renderPlanosSaas();
+      renderTabelaDespesasSa();
+      carregarPainelSuperAdmin();
+    };
+  </script>
+</body>
+</html>

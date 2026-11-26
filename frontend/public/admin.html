@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitGesty — Gestão que dá movimento</title>
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="auth-guard.js"></script>
+  <script src="theme-manager.js"></script>
+  <link rel="stylesheet" href="fitgesty-ui.css" />
+  <style>
+    /* Fonte maior funcional em todo o layout baseado em rem */
+    html.large-font, html:has(body.large-font) {
+      font-size: 19px !important;
+    }
+    body.large-font {
+      font-size: 118% !important;
+    }
+
+    /* Dropdown de busca rápida da barra superior */
+    .fg-search-bar {
+      position: relative;
+    }
+    .fg-search-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      min-width: 280px;
+      background: var(--fg-surface);
+      border: 1px solid var(--fg-border);
+      border-radius: 12px;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+      z-index: 300;
+      overflow: hidden;
+      display: none;
+    }
+    .fg-search-dropdown.open {
+      display: block;
+    }
+    .fg-search-item {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: none;
+      border-bottom: 1px solid var(--fg-border);
+      background: transparent;
+      color: var(--fg-text);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      font-family: inherit;
+      font-size: 0.83rem;
+    }
+    .fg-search-item:last-child {
+      border-bottom: none;
+    }
+    .fg-search-item:hover,
+    .fg-search-item.active {
+      background: var(--fg-primary-soft);
+      color: var(--fg-primary);
+    }
+    .fg-svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .fg-svg-sm { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .fg-step-card { background: var(--fg-surface); border: 1px solid var(--fg-border); border-radius: var(--fg-radius); padding: 1.35rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .fg-step-item { display: flex; gap: 0.75rem; align-items: flex-start; padding: 0.65rem 0; border-bottom: 1px solid var(--fg-border); }
+    .fg-step-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .fg-step-num { font-size: 0.72rem; font-weight: 700; color: var(--fg-primary); background: var(--fg-primary-soft); border-radius: 6px; padding: 3px 7px; flex-shrink: 0; }
+  </style>
+</head>
+<body class="light-theme">
+  <div class="fg-shell">
+    <!-- SIDEBAR LATERAL -->
+    <aside id="appSidebar" class="fg-sidebar" aria-label="Menu principal">
+      <div>
+        <div class="fg-brand">
+          <div class="fg-brand-icon">
+            <svg class="fg-svg" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div>
+            <div class="fg-brand-title">FitGesty</div>
+            <div class="fg-brand-sub">Gestão que dá movimento</div>
+          </div>
+        </div>
+
+        <div class="fg-unit-box">
+          <div class="fg-unit-label">Unidade principal</div>
+          <div id="sidebarAcademyName" class="fg-unit-name">Minha academia</div>
+        </div>
+
+        <div class="fg-nav-group">Principal</div>
+        <nav class="fg-nav">
+          <button type="button" class="fg-nav-item active" data-view="view-painel" data-crumb="Visão geral" onclick="switchView('view-painel')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+              Visão geral
+            </span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-alunos" data-crumb="Alunos" onclick="switchView('view-alunos')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Alunos
+            </span>
+            <span id="navBadgeAlunos" class="fg-nav-badge">0</span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-equipamentos" data-crumb="Equipamentos e salas" onclick="switchView('view-equipamentos')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M6 4v16"/><path d="M18 4v16"/><path d="M3 7v10"/><path d="M21 7v10"/></svg>
+              Equipamentos e salas
+            </span>
+            <span id="navBadgeEquip" class="fg-nav-badge">0</span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-reservas" data-crumb="Reservas" onclick="switchView('view-reservas')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Reservas
+            </span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-pagamentos" data-crumb="Financeiro" onclick="switchView('view-pagamentos')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Financeiro
+            </span>
+          </button>
+        </nav>
+
+        <div class="fg-nav-group">Acompanhamento</div>
+        <nav class="fg-nav">
+          <button type="button" class="fg-nav-item" data-view="view-resultados" data-crumb="Resultados" onclick="switchView('view-resultados')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Resultados
+            </span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-vencimentos" data-crumb="Vencimentos de planos" onclick="switchView('view-vencimentos')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Vencimentos
+            </span>
+            <span id="navBadgeVencidos" class="fg-nav-badge">0</span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-leads" data-crumb="Leads" onclick="switchView('view-leads')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Leads
+            </span>
+            <span id="navBadgeLeads" class="fg-nav-badge">0</span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-catraca" data-crumb="Controle de acesso" onclick="switchView('view-catraca')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Controle de acesso
+            </span>
+            <span id="navBadgePresentes" class="fg-nav-badge">0</span>
+          </button>
+          <button type="button" class="fg-nav-item" data-view="view-avisos" data-crumb="Avisos" onclick="switchView('view-avisos')">
+            <span class="fg-nav-left">
+              <svg class="fg-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Avisos
+            </span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="fg-sidebar-bottom">
+        <div class="fg-help-card">
+          <strong>Precisa de uma mão?</strong>
+          <span>Central de ajuda e atalhos rápidos do sistema.</span>
+        </div>
+
+        <div class="fg-a11y-row">
+          <button id="themeToggleBtn" type="button" class="fg-btn fg-btn-outline" style="padding:0.42rem;font-size:0.73rem;">Tema</button>
+          <button id="contrastButton" type="button" aria-pressed="false" class="fg-btn fg-btn-outline" style="padding:0.42rem;font-size:0.73rem;">Contraste</button>
+          <button id="fontButton" type="button" aria-pressed="false" class="fg-btn fg-btn-outline" style="padding:0.42rem;font-size:0.73rem;">A+</button>
+        </div>
+
+        <button type="button" class="fg-btn fg-btn-outline" onclick="logout()" style="width:100%;color:var(--fg-text-sec);font-size:0.8rem;">
+          <svg class="fg-svg-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sair do sistema
+        </button>
+      </div>
+    </aside>
+
+    <!-- ÁREA DIREITA -->
+    <div class="fg-main-wrap">
+      <header class="fg-topbar">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <button type="button" class="fg-btn fg-btn-outline mobile-menu-btn" onclick="document.getElementById('appSidebar').classList.toggle('open')">
+            <svg class="fg-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="fg-breadcrumb">
+            <span>Academia</span>
+            <span>/</span>
+            <strong id="topbarCrumb">Visão geral</strong>
+          </div>
+        </div>
+
+        <div class="fg-topbar-right">
+          <div class="fg-search-bar">
+            <svg class="fg-svg-sm" style="color:var(--fg-text-muted);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="globalSearchInput" placeholder="Buscar no sistema" oninput="handleGlobalSearch(this.value)">
+            <span class="fg-kbd">⌘K</span>
+          </div>
+          <div class="fg-user-pill">
+            <div class="fg-avatar">A</div>
+            <div style="line-height:1.2;">
+              <div style="font-size:0.82rem;font-weight:700;">Administrador</div>
+              <div style="font-size:0.72rem;color:var(--fg-text-muted);">Gestão da academia</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="fg-content">
+        <div id="demoBanner" style="display:none;margin-bottom:1.25rem;padding:0.8rem 1.15rem;border-radius:10px;background:var(--fg-primary-soft);border:1px solid var(--fg-primary-border);color:var(--fg-primary);font-size:0.83rem;font-weight:500;">
+          Você está navegando no <strong>Modo Demonstração</strong>. As alterações são temporárias.
+        </div>
+
+        <!-- 1. VISÃO GERAL -->
+        <section id="view-painel" class="view-panel active">
+          <div class="fg-page-head">
+            <div>
+              <h1>Visão geral</h1>
+              <p>Um resumo simples do que acontece na sua unidade.</p>
+            </div>
+            <button type="button" class="fg-btn fg-btn-primary" onclick="switchView('view-alunos')">
+              <svg class="fg-svg-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Novo aluno
+            </button>
+          </div>
+
+          <div class="fg-hero-banner">
+            <div>
+              <div class="fg-hero-tag">Sua academia, em movimento.</div>
+              <h2>Uma boa gestão começa por uma visão clara.</h2>
+              <p>Acompanhe mensalidades, acessos biométricos e reservas em um só lugar.</p>
+            </div>
+            <span id="heroDataHoje" class="fg-badge blue">Vamos cuidar da sua academia?</span>
+          </div>
+
+          <div class="fg-kpi-grid">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top">
+                <span>Receita do mês</span>
+                <span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+              </div>
+              <div id="kpiReceitaMes" class="fg-kpi-val">R$ 0,00</div>
+              <div id="kpiReceitaAnt" class="fg-kpi-sub">Mês anterior: R$ 0,00</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top">
+                <span>Alunos ativos</span>
+                <span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+              </div>
+              <div id="metric-alunos" class="fg-kpi-val">0</div>
+              <div id="metric-alunos-total" class="fg-kpi-sub">de 0 alunos cadastrados</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top">
+                <span>Acessos registrados</span>
+                <span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+              </div>
+              <div id="kpiAcessosMes" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Check-ins biométricos no mês</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top">
+                <span>Na academia agora</span>
+                <span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+              </div>
+              <div id="metric-recursos" class="fg-kpi-val">0</div>
+              <div id="kpiPresentesSub" class="fg-kpi-sub">Nenhum treino em andamento</div>
+            </div>
+          </div>
+
+          <div class="fg-grid-2-1" style="margin-bottom:1.35rem;">
+            <article class="fg-card">
+              <div class="fg-card-head">
+                <div>
+                  <h3 class="fg-card-title">Movimento da semana</h3>
+                  <p class="fg-card-sub">Descubra os horários mais tranquilos da sua unidade.</p>
+                </div>
+                <span id="heatmap-status-badge" class="fg-badge blue">0 acessos</span>
+              </div>
+              <div id="heatmapGridContainer" class="fg-heatmap"></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.9rem;padding-top:0.75rem;border-top:1px solid var(--fg-border);font-size:0.75rem;color:var(--fg-text-muted);">
+                <span id="heatmapTotalFoot">0 acessos registrados</span>
+                <div style="display:flex;align-items:center;gap:5px;">
+                  <span>Menor</span>
+                  <span style="width:14px;height:10px;border-radius:3px;background:var(--fg-surface-muted);display:inline-block;"></span>
+                  <span style="width:14px;height:10px;border-radius:3px;background:#dbeafe;display:inline-block;"></span>
+                  <span style="width:14px;height:10px;border-radius:3px;background:#93c5fd;display:inline-block;"></span>
+                  <span style="width:14px;height:10px;border-radius:3px;background:#3b82f6;display:inline-block;"></span>
+                  <span>Maior</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="fg-card" style="display:flex;flex-direction:column;justify-content:space-between;">
+              <div>
+                <div class="fg-card-head">
+                  <div>
+                    <h3 class="fg-card-title">O que você precisa fazer?</h3>
+                    <p class="fg-card-sub">Os caminhos mais curtos para o seu dia.</p>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:0.65rem;">
+                  <button type="button" class="fg-action-tile" onclick="switchView('view-alunos')">
+                    <div style="display:flex;align-items:center;gap:0.7rem;">
+                      <span class="fg-kpi-icon"><svg class="fg-svg-sm" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>
+                      <div>
+                        <div style="font-weight:600;font-size:0.86rem;color:var(--fg-text);">Matricular aluno</div>
+                        <div style="font-size:0.75rem;color:var(--fg-text-sec);">Cadastre uma nova matrícula</div>
+                      </div>
+                    </div>
+                    <span style="color:var(--fg-primary);font-weight:600;">→</span>
+                  </button>
+                  <button type="button" class="fg-action-tile" onclick="switchView('view-reservas')">
+                    <div style="display:flex;align-items:center;gap:0.7rem;">
+                      <span class="fg-kpi-icon"><svg class="fg-svg-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                      <div>
+                        <div style="font-weight:600;font-size:0.86rem;color:var(--fg-text);">Gerenciar reservas</div>
+                        <div style="font-size:0.75rem;color:var(--fg-text-sec);">Organize espaços e horários</div>
+                      </div>
+                    </div>
+                    <span style="color:var(--fg-primary);font-weight:600;">→</span>
+                  </button>
+                  <button type="button" class="fg-action-tile" onclick="switchView('view-pagamentos')">
+                    <div style="display:flex;align-items:center;gap:0.7rem;">
+                      <span class="fg-kpi-icon"><svg class="fg-svg-sm" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span>
+                      <div>
+                        <div style="font-weight:600;font-size:0.86rem;color:var(--fg-text);">Lançar despesa</div>
+                        <div style="font-size:0.75rem;color:var(--fg-text-sec);">Mantenha suas contas em dia</div>
+                      </div>
+                    </div>
+                    <span style="color:var(--fg-primary);font-weight:600;">→</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="fg-grid-2">
+            <article class="fg-card">
+              <div class="fg-card-head">
+                <div>
+                  <h3 class="fg-card-title">Seu mês em números</h3>
+                  <p class="fg-card-sub">Resumo financeiro consolidado do mês.</p>
+                </div>
+                <button type="button" class="fg-btn fg-btn-ghost" onclick="switchView('view-resultados')">Ver detalhes →</button>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;">
+                <div style="padding:0.85rem;border-radius:10px;background:var(--fg-surface-muted);">
+                  <div style="font-size:0.74rem;color:var(--fg-text-sec);">Receita</div>
+                  <div id="resumoBoxReceita" style="font-size:1.1rem;font-weight:700;margin-top:4px;">R$ 0,00</div>
+                </div>
+                <div style="padding:0.85rem;border-radius:10px;background:var(--fg-surface-muted);">
+                  <div style="font-size:0.74rem;color:var(--fg-text-sec);">Despesas</div>
+                  <div id="resumoBoxDespesas" style="font-size:1.1rem;font-weight:700;margin-top:4px;color:var(--fg-danger);">R$ 0,00</div>
+                </div>
+                <div style="padding:0.85rem;border-radius:10px;background:var(--fg-surface-muted);">
+                  <div style="font-size:0.74rem;color:var(--fg-text-sec);">Resultado líquido</div>
+                  <div id="resumoBoxLucro" style="font-size:1.1rem;font-weight:700;margin-top:4px;color:var(--fg-success);">R$ 0,00</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="fg-card">
+              <div class="fg-card-head">
+                <div>
+                  <h3 class="fg-card-title">Tudo em dia com seus alunos</h3>
+                  <p class="fg-card-sub">Pequenos cuidados fazem a diferença.</p>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;">
+                <div style="padding:0.85rem;border-radius:10px;background:var(--fg-surface-muted);">
+                  <div style="font-size:0.74rem;color:var(--fg-text-sec);">Mensalidades pendentes</div>
+                  <div id="kpiInadimplentesQtd" style="font-size:1.2rem;font-weight:700;margin-top:4px;">0</div>
+                </div>
+                <div style="padding:0.85rem;border-radius:10px;background:var(--fg-surface-muted);">
+                  <div style="font-size:0.74rem;color:var(--fg-text-sec);">Há 10 dias ou mais sem treinar</div>
+                  <div id="kpiChurnSilencioso" style="font-size:1.2rem;font-weight:700;margin-top:4px;">0</div>
+                </div>
+                <div style="padding:0.85rem;border-radius:10px;background:var(--fg-surface-muted);">
+                  <div style="font-size:0.74rem;color:var(--fg-text-sec);">Acessibilidade</div>
+                  <div id="metric-pcd" style="font-size:1.2rem;font-weight:700;margin-top:4px;">0</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 2. ALUNOS -->
+        <section id="view-alunos" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Alunos</h1>
+              <p>Mais cuidado com cada aluno. Menos trabalho na gestão.</p>
+            </div>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Alunos cadastrados</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span></div>
+              <div id="kpiAlunosTotalCard" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Toda a sua base em um lugar</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Matrículas ativas</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+              <div id="kpiAlunosAtivosCard" class="fg-kpi-val">0</div>
+              <div id="kpiAlunosPctCard" class="fg-kpi-sub">0% dos alunos cadastrados</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Mensalidades em dia</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span></div>
+              <div id="kpiAlunosEmDiaCard" class="fg-kpi-val">0</div>
+              <div id="kpiAlunosPendenciaCard" class="fg-kpi-sub">Nenhuma pendência financeira</div>
+            </div>
+          </div>
+
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Matricular novo aluno</h3>
+                <p class="fg-card-sub">Informações essenciais para começar. O prazo de vencimento é calculado pela duração do plano.</p>
+              </div>
+              <span class="fg-badge blue">Nova matrícula</span>
+            </div>
+
+            <form id="formMember">
+              <div class="fg-form-grid">
+                <div class="fg-field">
+                  <label for="memName">Nome completo</label>
+                  <input type="text" id="memName" class="fg-input" required placeholder="Ex.: Marina Souza">
+                </div>
+                <div class="fg-field">
+                  <label for="memEmail">E-mail</label>
+                  <input type="email" id="memEmail" class="fg-input" required placeholder="aluno@email.com">
+                </div>
+                <div class="fg-field">
+                  <label for="memPassword">Senha de acesso ao app</label>
+                  <input type="text" id="memPassword" class="fg-input" minlength="4" required placeholder="Mín. 4 caracteres">
+                </div>
+                <div class="fg-field">
+                  <label for="memPhone">Telefone / WhatsApp</label>
+                  <input type="text" id="memPhone" class="fg-input" placeholder="(67) 99999-9999">
+                </div>
+              </div>
+              <div class="fg-form-grid" style="grid-template-columns:repeat(4,1fr);">
+                <div class="fg-field">
+                  <label for="memPlan">Plano de acesso</label>
+                  <select id="memPlan" class="fg-select" required onchange="atualizarDataVencimentoPorPlano()"></select>
+                </div>
+                <div class="fg-field">
+                  <label for="memVencimento">Vencimento do plano</label>
+                  <input type="date" id="memVencimento" class="fg-input" required>
+                </div>
+                <div class="fg-field">
+                  <label for="memStatus">Status</label>
+                  <select id="memStatus" class="fg-select">
+                    <option value="Ativo">Ativo</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Inativo">Inativo</option>
+                  </select>
+                </div>
+                <div class="fg-field">
+                  <label for="memAccess">Acessibilidade (opcional)</label>
+                  <input type="text" id="memAccess" class="fg-input" placeholder="Ex.: cadeira de rodas">
+                </div>
+              </div>
+              <button type="submit" class="fg-btn fg-btn-primary">Salvar aluno</button>
+            </form>
+          </article>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Seus alunos</h3>
+                <p id="alunosContagemSub" class="fg-card-sub">Mostrando 0 alunos</p>
+              </div>
+              <div style="display:flex;gap:0.65rem;flex-wrap:wrap;">
+                <input type="text" id="buscaAlunoInput" class="fg-input" style="width:240px;" placeholder="Buscar por nome, e-mail ou telefone" oninput="renderTabelaAlunos()">
+                <select id="filtroStatusAluno" class="fg-select" style="width:160px;" onchange="renderTabelaAlunos()">
+                  <option value="">Todos os status</option>
+                  <option value="Ativo">Ativo</option>
+                  <option value="Pendente">Pendente</option>
+                  <option value="Inativo">Inativo</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Aluno</th>
+                    <th>Contato</th>
+                    <th>Plano</th>
+                    <th>Status</th>
+                    <th>Financeiro</th>
+                    <th>Acessibilidade</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tableMembers"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 2.1. VENCIMENTOS DE PLANOS -->
+        <section id="view-vencimentos" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Vencimentos de planos</h1>
+              <p>Acompanhe alunos com plano vencido ou prestes a vencer e renove com um clique.</p>
+            </div>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Planos vencidos</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span></div>
+              <div id="kpiPlanosVencidos" class="fg-kpi-val" style="color:var(--fg-danger);">0</div>
+              <div class="fg-kpi-sub">Precisam de renovação imediata</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Prestes a vencer (até 7 dias)</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span></div>
+              <div id="kpiPlanosVencendo" class="fg-kpi-val" style="color:var(--fg-warning);">0</div>
+              <div class="fg-kpi-sub">Vencem nos próximos 7 dias</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Planos em dia</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+              <div id="kpiPlanosEmDia" class="fg-kpi-val" style="color:var(--fg-success);">0</div>
+              <div class="fg-kpi-sub">Dentro do prazo de vigência</div>
+            </div>
+          </div>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Análise de vigência por aluno</h3>
+                <p class="fg-card-sub">Ordenado pelos planos vencidos e mais próximos do vencimento.</p>
+              </div>
+              <select id="filtroVencimentoSelect" class="fg-select" style="width:200px;" onchange="renderTabelaVencimentos()">
+                <option value="todos">Todos os alunos</option>
+                <option value="vencidos">Somente vencidos</option>
+                <option value="vencendo">Prestes a vencer (7 dias)</option>
+                <option value="em_dia">Em dia</option>
+              </select>
+            </div>
+
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Aluno</th>
+                    <th>Plano contratado</th>
+                    <th>Data de vencimento</th>
+                    <th>Situação do prazo</th>
+                    <th>Ação rápida</th>
+                  </tr>
+                </thead>
+                <tbody id="tableVencimentos"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 3. EQUIPAMENTOS E SALAS -->
+        <section id="view-equipamentos" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Equipamentos e salas</h1>
+              <p>Organize os espaços e recursos da sua academia.</p>
+            </div>
+            <button type="button" class="fg-btn fg-btn-outline" onclick="switchView('view-reservas')">Ver reservas →</button>
+          </div>
+
+          <div class="fg-hero-banner">
+            <div>
+              <div class="fg-hero-tag">Espaço organizado. Rotina mais leve.</div>
+              <h2>Cadastre os recursos da sua unidade e acompanhe tudo em um só lugar.</h2>
+              <p>Os recursos operacionais ficam disponíveis automaticamente na tela de reservas.</p>
+            </div>
+            <span id="equipBannerCount" class="fg-badge blue">0 recursos cadastrados</span>
+          </div>
+
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Novo equipamento ou sala</h3>
+                <p class="fg-card-sub">Defina o recurso e a quantidade disponível para reserva.</p>
+              </div>
+            </div>
+
+            <form id="formNovoEquipamento">
+              <div class="fg-form-grid">
+                <div class="fg-field">
+                  <label for="eqNome">Nome do equipamento ou sala</label>
+                  <input type="text" id="eqNome" class="fg-input" required placeholder="Ex.: Sala funcional">
+                </div>
+                <div class="fg-field">
+                  <label for="eqCategoria">Categoria</label>
+                  <select id="eqCategoria" class="fg-select">
+                    <option value="Funcional">Funcional / Sala</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="Musculação">Musculação</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+                </div>
+                <div class="fg-field">
+                  <label for="eqQuantidade">Quantidade / limite de reservas</label>
+                  <input type="number" id="eqQuantidade" class="fg-input" min="1" max="500" value="1" required>
+                </div>
+                <div class="fg-field">
+                  <label for="eqSituacao">Situação</label>
+                  <select id="eqSituacao" class="fg-select">
+                    <option value="Operacional">Operacional</option>
+                    <option value="Em manutenção">Em manutenção</option>
+                    <option value="Quebrado">Quebrado</option>
+                    <option value="Fora de uso">Fora de uso</option>
+                  </select>
+                </div>
+              </div>
+              <div class="fg-field" style="margin-bottom:1rem;">
+                <label for="eqObs">Observações (opcional)</label>
+                <input type="text" id="eqObs" class="fg-input" placeholder="Capacidade, localização ou outras informações">
+              </div>
+              <button type="submit" class="fg-btn fg-btn-primary">Salvar recurso</button>
+            </form>
+          </article>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <h3 class="fg-card-title">Seu inventário</h3>
+            </div>
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Quantidade</th>
+                    <th>Situação</th>
+                    <th>Observação</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tableEquipamentos"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 4. RESERVAS -->
+        <section id="view-reservas" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Reservas</h1>
+              <p>Cada atividade no seu lugar e no melhor horário.</p>
+            </div>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Reservas ativas</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span></div>
+              <div id="kpiReservasAtivas" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Agendamentos confirmados</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Recursos disponíveis</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+              <div id="kpiRecursosDisp" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Operacionais para reserva</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Reservas canceladas</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></div>
+              <div id="kpiReservasCanceladas" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Não ocupam capacidade</div>
+            </div>
+          </div>
+
+          <div class="fg-grid-2-1" style="margin-bottom:1.35rem;">
+            <article class="fg-card">
+              <div class="fg-card-head">
+                <div>
+                  <h3 class="fg-card-title">Nova reserva</h3>
+                  <p class="fg-card-sub">Escolha o recurso e reserve um horário para seu aluno.</p>
+                </div>
+                <span id="reservaDisponibilidadeBadge" class="fg-badge blue">Selecione um recurso</span>
+              </div>
+
+              <form id="formReservaEquip">
+                <div class="fg-form-grid">
+                  <div class="fg-field">
+                    <label for="resEquipamento">Equipamento ou sala</label>
+                    <select id="resEquipamento" class="fg-select" required onchange="atualizarInfoDisponibilidade()"></select>
+                  </div>
+                  <div class="fg-field">
+                    <label for="resSolicitante">Aluno / solicitante</label>
+                    <input type="text" id="resSolicitante" class="fg-input" placeholder="Nome do aluno ou recepção" required>
+                  </div>
+                </div>
+                <div class="fg-form-grid" style="grid-template-columns:repeat(3,1fr);">
+                  <div class="fg-field">
+                    <label for="resQtd">Quantidade</label>
+                    <input type="number" id="resQtd" class="fg-input" min="1" value="1" required onchange="atualizarInfoDisponibilidade()">
+                  </div>
+                  <div class="fg-field">
+                    <label for="resData">Data</label>
+                    <input type="date" id="resData" class="fg-input" required onchange="atualizarInfoDisponibilidade()">
+                  </div>
+                  <div class="fg-field">
+                    <label for="resHoraInicio">Horário</label>
+                    <input type="time" id="resHoraInicio" class="fg-input" required onchange="atualizarInfoDisponibilidade()">
+                  </div>
+                </div>
+                <button type="submit" id="btnConfirmarReserva" class="fg-btn fg-btn-primary">Confirmar reserva</button>
+              </form>
+            </article>
+
+            <aside class="fg-step-card">
+              <div>
+                <h3 class="fg-card-title" style="margin-bottom:6px;">Primeiro, prepare o espaço.</h3>
+                <p class="fg-card-sub" style="margin-bottom:1rem;">Para criar uma reserva, cadastre ao menos um equipamento ou uma sala operacional. A disponibilidade respeita a capacidade definida para cada recurso.</p>
+              </div>
+              <button type="button" class="fg-btn fg-btn-outline" onclick="switchView('view-equipamentos')">Cadastrar recurso →</button>
+            </aside>
+          </div>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Histórico de reservas</h3>
+                <p class="fg-card-sub">Reservas canceladas não ocupam a capacidade dos recursos.</p>
+              </div>
+            </div>
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Data e horário</th>
+                    <th>Recurso</th>
+                    <th>Quantidade</th>
+                    <th>Solicitante</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tableReservas"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 5. FINANCEIRO -->
+        <section id="view-pagamentos" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Financeiro</h1>
+              <p>Planos, duração em dias, mensalidades e despesas em um só lugar.</p>
+            </div>
+          </div>
+
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Planos, valores e duração</h3>
+                <p class="fg-card-sub">Edite nomes, valores e quantos dias cada plano dura, ou crie novos planos.</p>
+              </div>
+              <button type="button" class="fg-btn fg-btn-primary" onclick="salvarListaPlanos()">Salvar alterações</button>
+            </div>
+
+            <div id="listaPlanosEditor" class="fg-plan-grid"></div>
+
+            <form id="formNovoPlano" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;padding-top:1rem;border-top:1px solid var(--fg-border);">
+              <div class="fg-field" style="flex:2;min-width:190px;">
+                <label for="novoPlanoNome">Nome do novo plano</label>
+                <input type="text" id="novoPlanoNome" class="fg-input" placeholder="Ex.: Trimestral" required>
+              </div>
+              <div class="fg-field" style="flex:1;min-width:130px;">
+                <label for="novoPlanoPreco">Valor (R$)</label>
+                <input type="number" step="0.01" min="0" id="novoPlanoPreco" class="fg-input" placeholder="150,00" required>
+              </div>
+              <div class="fg-field" style="flex:1;min-width:130px;">
+                <label for="novoPlanoDias">Duração (dias)</label>
+                <input type="number" min="1" max="3650" id="novoPlanoDias" class="fg-input" value="30" placeholder="30" required>
+              </div>
+              <button type="submit" class="fg-btn fg-btn-outline">+ Criar plano</button>
+            </form>
+          </article>
+
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Adicionar despesa</h3>
+                <p class="fg-card-sub">Registre cada conta para manter o mês organizado.</p>
+              </div>
+            </div>
+
+            <form id="formNovaDespesa">
+              <div class="fg-form-grid">
+                <div class="fg-field">
+                  <label for="despMes">Mês de referência</label>
+                  <input type="month" id="despMes" class="fg-input" required>
+                </div>
+                <div class="fg-field">
+                  <label for="despCategoria">Categoria</label>
+                  <select id="despCategoria" class="fg-select" required>
+                    <option value="Energia elétrica">Energia elétrica</option>
+                    <option value="Água / Saneamento">Água / Saneamento</option>
+                    <option value="Aluguel / Condomínio">Aluguel / Condomínio</option>
+                    <option value="Folha / Instrutores">Folha / Instrutores</option>
+                    <option value="Manutenção de aparelhos">Manutenção de aparelhos</option>
+                    <option value="Internet / Sistemas">Internet / Sistemas</option>
+                    <option value="Limpeza & Insumos">Limpeza & Insumos</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Outros">Outros</option>
+                  </select>
+                </div>
+                <div class="fg-field">
+                  <label for="despDescricao">Descrição</label>
+                  <input type="text" id="despDescricao" class="fg-input" placeholder="Ex.: Fatura de energia" required>
+                </div>
+                <div class="fg-field">
+                  <label for="despValor">Valor (R$)</label>
+                  <input type="number" step="0.01" min="0.01" id="despValor" class="fg-input" placeholder="0,00" required>
+                </div>
+              </div>
+              <button type="submit" class="fg-btn fg-btn-primary">Adicionar despesa</button>
+            </form>
+          </article>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Despesas do mês</h3>
+                <p id="extratoDespesasResumo" class="fg-card-sub">0 lançamentos • Total de R$ 0,00</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <input type="month" id="filtroMesDespesas" class="fg-input" style="width:auto;" onchange="renderTabelaDespesas()">
+                <button type="button" class="fg-btn fg-btn-outline" onclick="document.getElementById('filtroMesDespesas').value='';renderTabelaDespesas()">Todos os meses</button>
+              </div>
+            </div>
+
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Mês</th>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tableDespesasLancadas"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 6. RESULTADOS -->
+        <section id="view-resultados" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Resultados</h1>
+              <p>Uma visão clara da saúde financeira da sua academia.</p>
+            </div>
+            <span id="fin-margem" class="fg-badge blue">Últimos 6 meses • Margem: 0%</span>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Receita do mês</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span></div>
+              <div id="fin-faturamento" class="fg-kpi-val">R$ 0,00</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Despesas do mês</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span></div>
+              <div id="fin-despesas" class="fg-kpi-val" style="color:var(--fg-danger);">R$ 0,00</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Resultado líquido</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span></div>
+              <div id="fin-lucro" class="fg-kpi-val">R$ 0,00</div>
+            </div>
+          </div>
+
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Receitas e despesas</h3>
+                <p class="fg-card-sub">Acompanhe a evolução mês a mês.</p>
+              </div>
+              <div style="display:flex;gap:1rem;font-size:0.78rem;color:var(--fg-text-sec);">
+                <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:3px;background:#3b82f6;display:inline-block;"></span> Receitas</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:3px;background:#cbd5e1;display:inline-block;"></span> Despesas</span>
+              </div>
+            </div>
+            <svg id="finChartSvg" viewBox="0 0 960 190" style="width:100%;height:auto;max-height:240px;display:block;overflow:visible;"></svg>
+          </article>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <h3 class="fg-card-title">Demonstrativo detalhado</h3>
+            </div>
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Mês</th>
+                    <th>Receita bruta</th>
+                    <th>Despesas</th>
+                    <th>Resultado líquido</th>
+                    <th>Margem</th>
+                  </tr>
+                </thead>
+                <tbody id="tableDre6Meses"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 7. LEADS -->
+        <section id="view-leads" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Leads</h1>
+              <p>Transforme novos contatos em próximos alunos.</p>
+            </div>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Total de leads</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></div>
+              <div id="kpiLeadsTotal" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Contatos interessados</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Novos contatos</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span></div>
+              <div id="kpiLeadsNovos" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Aguardando primeiro contato</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Em atendimento</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+              <div id="kpiLeadsAtendimento" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Matrículas originadas</div>
+            </div>
+          </div>
+
+          <div class="fg-grid-2-1">
+            <article class="fg-card">
+              <div class="fg-card-head">
+                <div>
+                  <h3 class="fg-card-title">Seus contatos</h3>
+                  <p class="fg-card-sub">Os contatos capturados pela sua página aparecerão aqui.</p>
+                </div>
+                <input type="text" id="buscaLeadInput" class="fg-input" style="width:220px;" placeholder="Buscar nome ou WhatsApp" oninput="renderTabelaLeads()">
+              </div>
+              <div class="fg-table-wrap">
+                <table class="fg-table">
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>WhatsApp</th>
+                      <th>Segmento</th>
+                      <th>Tamanho</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableLeads"></tbody>
+                </table>
+              </div>
+            </article>
+
+            <aside class="fg-step-card">
+              <div>
+                <h3 class="fg-card-title" style="margin-bottom:0.85rem;">Do primeiro contato à matrícula</h3>
+                <div class="fg-step-item">
+                  <span class="fg-step-num">01</span>
+                  <div>
+                    <div style="font-size:0.84rem;font-weight:600;">Receba o contato</div>
+                    <div style="font-size:0.76rem;color:var(--fg-text-sec);">Tenha todos os interessados organizados.</div>
+                  </div>
+                </div>
+                <div class="fg-step-item">
+                  <span class="fg-step-num">02</span>
+                  <div>
+                    <div style="font-size:0.84rem;font-weight:600;">Crie uma conexão</div>
+                    <div style="font-size:0.76rem;color:var(--fg-text-sec);">Entenda o que cada pessoa procura.</div>
+                  </div>
+                </div>
+                <div class="fg-step-item">
+                  <span class="fg-step-num">03</span>
+                  <div>
+                    <div style="font-size:0.84rem;font-weight:600;">Convide para começar</div>
+                    <div style="font-size:0.76rem;color:var(--fg-text-sec);">Acompanhe o próximo passo de perto.</div>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- 8. CONTROLE DE ACESSO -->
+        <section id="view-catraca" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Controle de acesso</h1>
+              <p>Acompanhe as entradas e saídas da sua unidade.</p>
+            </div>
+            <span id="badge-presentes-catraca" class="fg-badge green">Em tempo real</span>
+          </div>
+
+          <div class="fg-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Na academia agora</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></div>
+              <div id="kpiCatracaPresentes" class="fg-kpi-val">0</div>
+              <div id="kpiCatracaPresentesSub" class="fg-kpi-sub">Nenhum treino em andamento</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Entradas registradas</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></span></div>
+              <div id="kpiCatracaEntradas" class="fg-kpi-val">0</div>
+              <div id="kpiCatracaPresentesSub2" class="fg-kpi-sub">Acessos biométricos recentes</div>
+            </div>
+            <div class="fg-kpi">
+              <div class="fg-kpi-top"><span>Saídas registradas</span><span class="fg-kpi-icon"><svg class="fg-svg" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span></div>
+              <div id="kpiCatracaSaidas" class="fg-kpi-val">0</div>
+              <div class="fg-kpi-sub">Treinos finalizados</div>
+            </div>
+          </div>
+
+          <article class="fg-card" style="margin-bottom:1.35rem;">
+            <div class="fg-card-head">
+              <div>
+                <h3 class="fg-card-title">Movimentações recentes</h3>
+                <p class="fg-card-sub">As saídas são registradas quando o aluno finaliza o treino.</p>
+              </div>
+            </div>
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Horário</th>
+                    <th>Aluno</th>
+                    <th>Movimento</th>
+                    <th>Status na unidade</th>
+                  </tr>
+                </thead>
+                <tbody id="tableCatracaLogs"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <h3 class="fg-card-title">Frequência por aluno</h3>
+            </div>
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Aluno</th>
+                    <th>Plano</th>
+                    <th>Status</th>
+                    <th>Total de entradas</th>
+                    <th>Último acesso</th>
+                  </tr>
+                </thead>
+                <tbody id="tableCatracaAlunos"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- 9. AVISOS -->
+        <section id="view-avisos" class="view-panel">
+          <div class="fg-page-head">
+            <div>
+              <h1>Avisos</h1>
+              <p>Mantenha alunos e equipe sempre por dentro.</p>
+            </div>
+          </div>
+
+          <div class="fg-grid-2-1" style="margin-bottom:1.35rem;">
+            <article class="fg-card">
+              <div class="fg-card-head">
+                <div>
+                  <h3 class="fg-card-title">Novo comunicado</h3>
+                  <p class="fg-card-sub">Envie uma atualização para quem faz parte da sua academia.</p>
+                </div>
+              </div>
+              <form id="formAnn">
+                <div class="fg-form-grid" style="grid-template-columns:2fr 1fr;">
+                  <div class="fg-field">
+                    <label for="annTitle">Título do aviso</label>
+                    <input type="text" id="annTitle" class="fg-input" required placeholder="Ex.: Horário especial no feriado">
+                  </div>
+                  <div class="fg-field">
+                    <label for="annAudience">Público-alvo</label>
+                    <select id="annAudience" class="fg-select">
+                      <option>Todos</option>
+                      <option>Alunos</option>
+                      <option>Colaboradores</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="fg-field" style="margin-bottom:1rem;">
+                  <label for="annMsg">Mensagem</label>
+                  <textarea id="annMsg" class="fg-textarea" rows="3" required placeholder="Escreva sua mensagem aqui..."></textarea>
+                </div>
+                <button type="submit" class="fg-btn fg-btn-primary">Publicar comunicado</button>
+              </form>
+            </article>
+
+            <aside class="fg-step-card">
+              <div>
+                <h3 class="fg-card-title" style="margin-bottom:4px;">Boa comunicação também é cuidado.</h3>
+                <p class="fg-card-sub" style="margin-bottom:0.85rem;">Um recado simples mantém todo mundo na mesma página.</p>
+                <div class="fg-step-item">
+                  <span class="fg-step-num">01</span>
+                  <div style="font-size:0.82rem;font-weight:500;">Vá direto ao ponto.</div>
+                </div>
+                <div class="fg-step-item">
+                  <span class="fg-step-num">02</span>
+                  <div style="font-size:0.82rem;font-weight:500;">Escolha o público certo.</div>
+                </div>
+                <div class="fg-step-item">
+                  <span class="fg-step-num">03</span>
+                  <div style="font-size:0.82rem;font-weight:500;">Revise antes de publicar.</div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <article class="fg-card">
+            <div class="fg-card-head">
+              <h3 class="fg-card-title">Mural de comunicados</h3>
+            </div>
+            <div class="fg-table-wrap">
+              <table class="fg-table">
+                <thead>
+                  <tr>
+                    <th>Título</th>
+                    <th>Público</th>
+                    <th>Mensagem</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tableAnnouncements"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <footer class="fg-footer-bar">
+          <span><strong>FitGesty</strong> • Gestão simples. Academia em movimento.</span>
+          <span id="footerDataAtual"></span>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
